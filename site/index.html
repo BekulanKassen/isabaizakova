@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Филармония Исы Байзакова</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Павлодар облыстық Иса Байзақов атындағы филармониясы: афиша, ұжымдар, 428 орындық концерт залы.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<!--
+  Design: Isa Baizakov Philharmonic, Pavlodar. Kind: place (concert hall).
+  Layout: full-bleed bands alternating stage-dark and stucco-light; content on one 12-col wrap (max 1320).
+  Palette from the building: stucco walls, stage dark, oxblood seats (action), facade ochre (one accent line), gilding (figures on dark), foyer mint.
+  Motion (GSAP + ScrollTrigger): hero entrance + photo parallax, arch reveal of the hall (pinned), archive photos at different speeds,
+  horizontal timeline (desktop). Everything rests under prefers-reduced-motion.
+  Afisha dates and prices for December 2026 are SAMPLE data: replace with the real programme.
+-->
+<style>
+:root{
+  --stucco:#F3F2EC; --paper:#FBFAF6; --ink:#141B1A; --ink-2:#4B5350; --ink-3:#5E6562; --line:rgba(20,27,26,.12);
+  --stage:#0E1514; --stage-2:#17211F; --on-stage:#EEEDE6; --on-stage-2:rgba(238,237,230,.7); --line-d:rgba(238,237,230,.16);
+  --seat:#8B1D2C; --seat-2:#721522; --ochre:#E0AC45; --gold:#CFAA62; --mint:#DCE5D6;
+  --f-d:"Prata",Georgia,"Times New Roman",serif;
+  --f-t:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --ease:cubic-bezier(.23,1,.32,1);
+  --gut:max(20px,env(safe-area-inset-left,0px));
+  --gut-r:max(20px,env(safe-area-inset-right,0px));
+  --head-h:72px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:calc(var(--head-h) + 16px)}
+body{margin:0;background:var(--stucco);color:var(--ink);font-family:var(--f-t);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--stage)}
+img{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:var(--f-d);font-weight:400;line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+:focus-visible{outline:2px solid var(--seat);outline-offset:3px;border-radius:4px}
+.on-dark :focus-visible,.hero :focus-visible,.head:not(.solid) :focus-visible,.menu :focus-visible,.card.buy :focus-visible{outline-color:var(--ochre)}
+.wrap{width:100%;max-width:1360px;margin-inline:auto;padding-left:var(--gut);padding-right:var(--gut-r)}
+@media (min-width:900px){:root{--gut:max(40px,env(safe-area-inset-left,0px));--gut-r:max(40px,env(safe-area-inset-right,0px))}}
+.skip{position:fixed;left:16px;top:-80px;z-index:100;background:var(--ochre);color:var(--ink);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + 12px)}
+.eyebrow{font-size:14px;font-weight:500;letter-spacing:.01em;color:var(--ink-3)}
+.on-dark .eyebrow,.hero .eyebrow{color:var(--on-stage-2)}
+.tnum{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:10px;border:0;font:600 15px/1 var(--f-t);text-decoration:none;cursor:pointer;white-space:nowrap;
+  transition:background-color .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease),transform .16s var(--ease)}
+.btn:active{transform:scale(.97)}
+.btn-seat{background:var(--seat);color:#fff}
+.btn-seat:hover{background:var(--seat-2)}
+.btn-line{border:1.5px solid currentColor;background:transparent}
+.btn-line:hover{background:rgba(255,255,255,.08)}
+.btn-ink{border:1.5px solid var(--ink);color:var(--ink);background:transparent}
+.btn-ink:hover{background:var(--ink);color:var(--paper)}
+.btn-sm{padding:0 18px}
+.arrow{width:16px;height:16px;flex:none;transition:transform .2s var(--ease)}
+a:hover>.arrow,button:hover>.arrow{transform:translateX(3px)}
+.link{display:inline-flex;align-items:center;min-height:44px;gap:8px;font-weight:600;text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 100%/0 1.5px no-repeat;padding-bottom:2px;transition:background-size .25s var(--ease)}
+.link:hover{background-size:100% 1.5px}
+
+/* ============ header ============ */
+.head{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:50;color:var(--on-stage);transition:background-color .3s var(--ease),color .3s var(--ease),box-shadow .3s var(--ease)}
+.head::before{content:"";position:absolute;inset:0 0 -40px;background:linear-gradient(180deg,rgba(14,21,20,.6),rgba(14,21,20,0));pointer-events:none;transition:opacity .3s var(--ease);z-index:-1}
+.head.solid::before{opacity:0}
+.head.solid{background:rgba(243,242,236,.94);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px);color:var(--ink);box-shadow:0 1px 0 var(--line)}
+.head .wrap{display:flex;align-items:center;gap:28px;height:var(--head-h)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;line-height:1.15}
+.brand svg{width:38px;height:30px;flex:none}
+.brand span{font-family:var(--f-d);font-size:17px}
+.brand small{display:block;font-family:var(--f-t);font-size:12px;opacity:.72}
+.nav{display:flex;gap:26px;margin-left:auto;font-size:15px;font-weight:500}
+.nav a{text-decoration:none;opacity:.86;transition:opacity .15s ease}
+.nav a:hover{opacity:1}
+.lang{display:inline-flex;border:1px solid currentColor;border-radius:8px;padding:2px;opacity:.9}
+.lang button{font:600 12px/1 var(--f-t);color:inherit;background:transparent;border:0;padding:7px 9px;border-radius:6px;cursor:pointer;min-width:44px;min-height:32px}
+.lang button[aria-pressed="true"]{background:currentColor}
+.lang button[aria-pressed="true"] span{color:var(--stage)}
+.head.solid .lang button[aria-pressed="true"] span{color:var(--paper)}
+.burger{display:none;margin-left:auto;width:44px;height:44px;border-radius:10px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;place-items:center}
+.burger svg{width:20px;height:20px}
+.menu{position:fixed;inset:0;z-index:70;background:var(--stage);color:var(--on-stage);padding:calc(env(safe-area-inset-top,0px) + 16px) var(--gut-r) 32px var(--gut);display:flex;flex-direction:column;gap:28px}
+.menu-top{display:flex;justify-content:space-between;align-items:center;height:56px}
+.menu nav{display:grid;gap:6px}
+.menu nav a{font-family:var(--f-d);font-size:38px;line-height:1.25;text-decoration:none}
+.menu .btn{margin-top:auto}
+@media (max-width:1040px){.nav{display:none}.burger{display:grid}.head .wrap>.lang,.head .wrap>.btn{display:none}}
+
+/* ============ hero ============ */
+.hero{position:relative;min-height:max(640px,min(100svh,980px));display:grid;align-items:end;background:var(--stage);color:var(--on-stage);overflow:hidden;isolation:isolate}
+.hero-media{position:absolute;inset:0;z-index:-1;overflow:hidden}
+.hero-media img{width:100%;height:118%;object-fit:cover;object-position:50% 40%;position:absolute;top:-9%;left:0}
+.hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,21,20,.6) 0%,rgba(14,21,20,.15) 26%,rgba(14,21,20,.35) 52%,rgba(14,21,20,.94) 88%,var(--stage) 100%),linear-gradient(90deg,rgba(14,21,20,.62) 0%,rgba(14,21,20,.25) 45%,rgba(14,21,20,0) 70%)}
+.hero-content{padding-block:140px 40px;display:grid;gap:32px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:end}
+.hero h1{font-size:clamp(46px,6.6vw,112px);line-height:1}
+h2{font-size:clamp(38px,5vw,76px)}
+h3{font-size:clamp(24px,2.2vw,32px);line-height:1.18}
+.h1-line{display:block;overflow:hidden;padding-block:.14em .08em;margin-block:-.14em -.08em}
+.h1-line>span{display:inline-block}
+.hero-lead{max-width:560px;font-size:19px;color:var(--on-stage-2);margin-top:22px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.next{background:var(--paper);color:var(--ink);border-radius:16px;padding:22px;display:grid;gap:14px;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.next-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;color:var(--ink-3)}
+.next-top i{width:8px;height:8px;border-radius:50%;background:var(--seat);display:inline-block;margin-right:8px}
+.next-date{display:flex;gap:16px;align-items:center}
+.next-date b{font-family:var(--f-d);font-weight:400;font-size:64px;line-height:.9;color:var(--seat)}
+.next-date span{font-size:14px;color:var(--ink-2);line-height:1.4}
+.next-title{font-family:var(--f-d);font-size:24px;line-height:1.2}
+.next .btn{width:100%}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line-d);padding-top:20px;gap:20px}
+.facts div{display:grid;gap:2px}
+.facts b{font-family:var(--f-d);font-weight:400;font-size:30px;color:var(--gold);line-height:1.1}
+.facts span{font-size:13px;color:var(--on-stage-2)}
+.ochre-rule{height:6px;background:var(--ochre)}
+@media (max-width:899px){
+  .hero{min-height:auto;align-items:stretch}
+  .hero-content{padding-block:120px 28px;gap:24px}
+  .hero-grid{grid-template-columns:1fr;gap:28px}
+  .hero-lead{font-size:17px}
+  .hero-media::after{background:linear-gradient(180deg,rgba(14,21,20,.72) 0%,rgba(14,21,20,.6) 40%,rgba(14,21,20,.92) 80%,var(--stage) 100%)}
+  .next-date b{font-size:44px}
+  .brand small{white-space:nowrap}.head .wrap{gap:12px}
+  .hero-ctas .btn{flex:1 1 160px}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts b{font-size:26px}
+}
+
+/* ============ afisha ============ */
+.sec{padding-block:120px}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;margin-bottom:40px}
+.sec-head h2{line-height:1}
+.sec-head p{max-width:420px;color:var(--ink-2)}
+.month{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.month b{font-family:var(--f-d);font-weight:400;font-size:28px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.chip{transition-property:background-color,color,border-color,transform;font:500 14px/1 var(--f-t);color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:0 16px;min-height:40px;cursor:pointer;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:active{transform:scale(.97)}
+.events{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.ev{display:grid;grid-template-columns:110px 130px 76px minmax(0,1fr) 130px auto;gap:24px;align-items:center;padding:22px 0;border-bottom:1px solid var(--line);position:relative;isolation:isolate}
+.ev::before{content:"";position:absolute;inset:0 -16px;background:var(--paper);border-radius:12px;opacity:0;z-index:-1;transition:opacity .2s var(--ease)}
+@media (hover:hover) and (pointer:fine){.ev:hover::before{opacity:1}}
+.ev-thumb{width:76px;aspect-ratio:4/5;border-radius:999px 999px 8px 8px;overflow:hidden;background:var(--mint)}
+.ev-thumb img{width:100%;height:100%;object-fit:cover}
+.ev-day{font-family:var(--f-d);font-size:72px;line-height:.85;color:var(--ink)}
+.ev-when{font-size:14px;color:var(--ink-2);line-height:1.45}
+.ev-when b{display:block;color:var(--ink);font-weight:600}
+.ev-t h3{line-height:1.15}
+.ev-t p{font-size:14px;color:var(--ink-2);margin-top:6px}
+.ev-price{font-size:15px;color:var(--ink-2)}
+.ev .btn{position:relative;z-index:1}
+.ev-empty{padding:32px 12px;color:var(--ink-2)}
+.afisha-foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:28px;color:var(--ink-2);font-size:15px}
+.preview{position:fixed;left:0;top:0;width:300px;aspect-ratio:4/5;border-radius:999px 999px 14px 14px;overflow:hidden;pointer-events:none;z-index:40;opacity:0;visibility:hidden;box-shadow:0 30px 60px -20px rgba(14,21,20,.45)}
+.preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s ease}
+.preview img.on{opacity:1}
+@media (max-width:899px){
+  .sec{padding-block:80px}
+  .sec-head{grid-template-columns:1fr;margin-bottom:28px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;margin-inline:calc(-1 * var(--gut)) calc(-1 * var(--gut-r));padding-inline:var(--gut) var(--gut-r);scrollbar-width:none;padding-bottom:4px}
+  .chip{flex:none}
+  .ev{grid-template-columns:56px minmax(0,1fr) auto;grid-template-areas:"d t i" "d w i" "d p b";gap:4px 14px;padding:20px 0;align-items:start}
+  .ev-thumb{grid-area:i;width:60px;justify-self:end}
+  .ev-day{grid-area:d;font-size:48px}
+  .ev-t{grid-area:t}
+  .ev-when{grid-area:w;display:flex;gap:8px;flex-wrap:wrap}
+  .ev-when b{display:inline}
+  .ev-price{grid-area:p;align-self:center;margin-top:12px;font-size:14px}
+  .ev .btn{grid-area:b;justify-self:end;margin-top:12px}
+  .ev-day{font-size:44px}
+}
+
+/* ============ collectives ============ */
+.cols-sec{background:var(--paper)}
+.cols{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:40px 24px}
+.col{grid-column:span 4;display:grid;gap:14px;align-content:start;text-decoration:none}
+.col.w7{grid-column:span 7}.col.w5{grid-column:span 5}
+.col-media{position:relative;aspect-ratio:3/2;overflow:hidden;border-radius:14px;background:var(--mint)}
+.col.w7 .col-media,.col.w5 .col-media{aspect-ratio:auto;height:clamp(300px,34vw,460px)}
+.col-zoom{position:absolute;inset:0;transition:transform .7s var(--ease)}
+.col-media img{position:absolute;left:0;top:-8%;width:100%;height:116%;object-fit:cover}
+@media (hover:hover) and (pointer:fine){.col:hover .col-zoom{transform:scale(1.03)}}
+.col h3{line-height:1.2}
+.col p{font-size:14px;color:var(--ink-3)}
+@media (max-width:899px){
+  .cols{gap:28px 14px}
+  .col,.col.w7,.col.w5{grid-column:span 12}
+  .col.half{grid-column:span 6}
+  .col.w7 .col-media,.col.w5 .col-media{height:auto;aspect-ratio:3/2}
+  .col.half h3{font-size:17px}
+}
+
+/* ============ hall intro (arch reveal) ============ */
+.hall-intro{position:relative;height:100svh;min-height:600px;background:var(--stage);color:var(--on-stage);overflow:hidden}
+.hall-word{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-d);font-size:clamp(120px,30vw,460px);line-height:1;color:#1F2B29;letter-spacing:-.02em;user-select:none}
+.arch-reveal{position:absolute;inset:0;overflow:hidden}
+.arch-reveal img{width:100%;height:100%;object-fit:cover;object-position:50% 45%}
+.arch-reveal::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,21,20,0) 40%,rgba(14,21,20,.85) 100%),linear-gradient(90deg,rgba(14,21,20,.78) 0%,rgba(14,21,20,.35) 48%,rgba(14,21,20,0) 72%)}
+.hall-cap{position:absolute;left:0;right:0;bottom:0;padding-bottom:56px;z-index:2}
+.hall-cap h2{max-width:16ch}
+.hall-cap p{margin-top:14px;color:var(--on-stage-2);font-size:18px}
+
+/* ============ hall chapters ============ */
+.chapters{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;padding-block:120px}
+.ch-stage{position:sticky;top:calc(var(--head-h) + 32px);height:calc(100svh - var(--head-h) - 64px);max-height:760px}
+.ch-frame{position:relative;height:100%;border-radius:999px 999px 18px 18px;overflow:hidden;background:var(--mint)}
+.ch-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .7s var(--ease),transform 1.2s var(--ease)}
+.ch-frame img.on{opacity:1;transform:none}
+.ch-list{display:grid}
+.ch{min-height:72svh;display:grid;align-content:center;gap:14px;padding-block:40px;border-bottom:1px solid var(--line)}
+.ch:last-child{border-bottom:0}
+.ch .eyebrow{color:var(--seat)}
+.ch h3{font-size:clamp(28px,2.6vw,38px)}
+.ch p{color:var(--ink-2);max-width:46ch}
+.ch-img{display:none}
+.seats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:10px}
+.seats div{background:var(--paper);padding:18px 20px}
+.seats b{display:block;font-family:var(--f-d);font-weight:400;font-size:40px;line-height:1.1;color:var(--seat)}
+.seats span{font-size:14px;color:var(--ink-3)}
+@media (max-width:899px){
+  .chapters{grid-template-columns:1fr;gap:0;padding-block:72px}
+  .ch-stage{display:none}
+  .ch{min-height:0;padding-block:36px}
+  .ch-img{display:block;border-radius:999px 999px 14px 14px;overflow:hidden;aspect-ratio:4/3.4;margin-bottom:8px}
+  .ch-img img{width:100%;height:100%;object-fit:cover}
+  .seats b{font-size:32px}
+}
+
+/* ============ 85 ============ */
+.on-dark{background:var(--stage);color:var(--on-stage)}
+.y85{position:relative;padding-block:140px 200px;overflow:hidden}
+.y85-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;align-items:center}
+.big85{font-family:var(--f-d);font-size:clamp(180px,30vw,460px);line-height:.8;color:var(--gold);letter-spacing:-.04em;position:relative;z-index:1}
+.y85-txt{display:grid;gap:20px;position:relative;z-index:2}
+.y85-txt h2{}
+.y85-txt p{color:var(--on-stage-2);max-width:44ch}
+.arc{position:absolute;border-radius:10px;overflow:hidden;filter:grayscale(1) contrast(1.05);opacity:.9;z-index:0}
+.arc img{width:100%;height:100%;object-fit:cover}
+.arc.a1{width:min(280px,20vw);aspect-ratio:3/2;top:56px;left:33%}
+.arc.a2{width:min(220px,16vw);aspect-ratio:3/2;bottom:56px;left:12%;z-index:2}
+.arc.a3{width:min(260px,19vw);aspect-ratio:3/2;bottom:40px;right:8%}
+@media (max-width:899px){
+  .y85{padding-block:96px 40px}
+  .arc.a1{left:auto}
+  .y85-grid{grid-template-columns:1fr;gap:28px}
+  .big85{font-size:44vw}
+  .arc.a1{width:42vw;top:96px;right:var(--gut-r)}
+  .arc.a2,.arc.a3{display:none}
+}
+.tl-pin{position:relative;overflow:hidden;padding-block:40px 120px}
+@media (min-width:900px){.tl-h.tl-pin{min-height:calc(100svh - var(--head-h));display:flex;flex-direction:column;justify-content:center;padding-block:32px}}
+.tl-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:36px}
+.tl-head h3{}
+.tl-prog{height:2px;background:var(--line-d);margin-bottom:36px;position:relative}
+.tl-prog i{position:absolute;inset:0;background:var(--ochre);transform-origin:0 50%;transform:scaleX(.08)}
+.tl-track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 24px;max-width:1360px;margin-inline:auto;padding-left:var(--gut);padding-right:var(--gut-r)}
+.tl-h .tl-track{display:flex;width:max-content;max-width:none;margin:0}
+.tl-prog{display:none}.tl-h .tl-prog{display:block}
+.yr{display:grid;gap:14px;align-content:start}
+.tl-h .yr{width:340px;flex:none}
+.yr b{font-family:var(--f-d);font-weight:400;font-size:clamp(48px,4.4vw,64px);line-height:.9;color:var(--gold)}
+.yr p{color:var(--on-stage-2);font-size:16px}
+.yr figure{margin:6px 0 0;border-radius:10px;overflow:hidden;aspect-ratio:3/2}
+.yr figure img{width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
+.yr.doc figure{aspect-ratio:3/4;width:62%}
+.yr.doc figure img{filter:sepia(.25)}
+@media (max-width:899px){
+  .tl-pin{padding-block:24px 88px}
+  .tl-prog{display:none}
+  .tl-track{grid-template-columns:1fr;gap:36px}
+  .yr{width:auto;grid-template-columns:110px minmax(0,1fr);gap:4px 16px}
+  .yr b{font-size:48px;grid-row:span 2}
+  .yr figure{grid-column:2}
+  .yr.doc figure{width:70%}
+}
+
+/* ============ news ============ */
+.news{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.post{display:grid;gap:14px;align-content:start;text-decoration:none}
+.post-media{aspect-ratio:4/3;overflow:hidden;border-radius:14px}
+.post-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
+@media (hover:hover) and (pointer:fine){.post:hover .post-media img{transform:scale(1.03)}}
+.post time{font-size:13px;color:var(--ink-3)}
+.post h3{line-height:1.25}
+.projects{margin-top:64px;padding-top:28px;border-top:1px solid var(--line);display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;align-items:baseline}
+.projects ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px 36px}
+.projects li a{font-family:var(--f-d);font-size:clamp(24px,2.4vw,36px);text-decoration:none;background:linear-gradient(var(--ochre),var(--ochre)) 0 92%/0 3px no-repeat;transition:background-size .3s var(--ease)}
+.projects li a:hover{background-size:100% 3px}
+@media (max-width:899px){
+  .news{grid-template-columns:1fr;gap:32px}
+  .projects{grid-template-columns:1fr;margin-top:48px}
+}
+
+/* ============ visit ============ */
+.visit{background:var(--mint)}
+.visit-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:24px}
+.card{background:var(--paper);border-radius:16px;padding:28px;display:grid;gap:14px;align-content:start}
+.card h3{}
+.card p,.card li{color:var(--ink-2);font-size:16px}
+.card ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.card .k{display:block;font-size:13px;color:var(--ink-3)}
+.card .v{color:var(--ink);font-weight:500}
+.card a.v,.card .v a{display:inline-block;color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px;transition:text-decoration-color .15s ease}
+.card a.v{color:var(--ink)}
+@media (hover:hover) and (pointer:fine){.card a.v:hover,.card .v a:hover{text-decoration-color:currentColor}}
+.card .v a,.card a.v{padding-block:10px;margin-block:-10px}
+.card.buy{background:var(--stage);color:var(--on-stage)}
+.card.buy p{color:var(--on-stage-2)}
+.card.buy .btn{justify-self:start;margin-top:6px}
+.card.buy .kassa{margin-top:auto;padding-top:20px;border-top:1px solid var(--line-d);font-size:14px;color:var(--on-stage-2)}
+.card.buy{grid-template-rows:auto auto auto 1fr}
+.map-arch{aspect-ratio:16/10;border-radius:999px 999px 12px 12px;overflow:hidden}
+.map-arch img{width:100%;height:100%;object-fit:cover}
+@media (max-width:899px){.visit-grid{grid-template-columns:1fr}}
+
+/* ============ footer ============ */
+.foot{padding-block:80px 40px}
+.foot-top{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:32px}
+.foot-brand{font-family:var(--f-d);font-size:clamp(30px,3vw,44px);line-height:1.1}
+.foot h4{margin:0 0 12px;font-size:14px;font-weight:600;color:var(--on-stage-2)}
+.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:0;font-size:15px}
+.foot li a{display:inline-flex;align-items:center;min-height:40px}
+.foot a{text-decoration:none;opacity:.9}
+.foot a:hover{opacity:1;text-decoration:underline}
+.foot-bot{margin-top:64px;padding-top:24px;border-top:1px solid var(--line-d);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--on-stage-2)}
+@media (max-width:899px){.foot-top{grid-template-columns:1fr 1fr}.foot-top>div:first-child{grid-column:1/-1}.foot{padding-bottom:110px}}
+
+/* mobile action bar */
+.actbar{position:fixed;left:0;right:0;bottom:0;z-index:45;display:none;gap:10px;padding:10px var(--gut-r) calc(10px + env(safe-area-inset-bottom,0px)) var(--gut);background:rgba(243,242,236,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 -1px 0 var(--line);transform:translateY(110%);transition:transform .35s var(--ease)}
+.actbar .btn{flex:1}
+.actbar.show{transform:none}
+@media (max-width:899px){.actbar{display:flex}}
+
+@media (prefers-reduced-motion:reduce){
+  .col-zoom,.post-media img,.ch-frame img,.arrow,.btn,.chip{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+
+<a class="skip" href="#main" data-ru="Перейти к содержанию">Мазмұнға өту</a>
+
+<header class="head" id="head">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Иса Байзақов атындағы филармония">
+      <svg viewBox="0 0 38 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 29V15a5.5 5.5 0 0 1 11 0v14M13.5 29V12a5.5 5.5 0 0 1 11 0v17M25 29V15a5.5 5.5 0 0 1 11 0v14M1 29h36"/></svg>
+      <span><span data-ru="Филармония">Иса Байзақов</span><small data-ru="имени Исы Байзакова">атындағы филармония</small></span>
+    </a>
+    <nav class="nav" aria-label="Негізгі мәзір" data-ru-label="Главное меню">
+      <a href="#afisha">Афиша</a>
+      <a href="#ujymdar" data-ru="Коллективы">Ұжымдар</a>
+      <a href="#zal">Зал</a>
+      <a href="#tarih" data-ru="История">Тарих</a>
+      <a href="#kelushilerge" data-ru="Посетителям">Келушілерге</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Тіл / Язык">
+      <button type="button" data-lang="kk" aria-pressed="true"><span>ҚАЗ</span></button>
+      <button type="button" data-lang="ru" aria-pressed="false"><span>РУС</span></button>
+    </div>
+    <a class="btn btn-seat btn-sm" href="#afisha" data-ru="Купить билет">Билет алу</a>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Мәзір" data-ru-label="Меню"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6h16M2 14h16"/></svg></button>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <div class="menu-top">
+    <div class="lang" role="group" aria-label="Тіл / Язык">
+      <button type="button" data-lang="kk" aria-pressed="true"><span>ҚАЗ</span></button>
+      <button type="button" data-lang="ru" aria-pressed="false"><span>РУС</span></button>
+    </div>
+    <button class="burger" type="button" style="display:grid" data-close aria-label="Жабу" data-ru-label="Закрыть"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+  </div>
+  <nav aria-label="Мәзір" data-ru-label="Меню">
+    <a href="#afisha">Афиша</a>
+    <a href="#ujymdar" data-ru="Коллективы">Ұжымдар</a>
+    <a href="#zal">Зал</a>
+    <a href="#tarih" data-ru="История">Тарих</a>
+    <a href="#kelushilerge" data-ru="Посетителям">Келушілерге</a>
+  </nav>
+  <a class="btn btn-seat" href="#afisha" data-ru="Купить билет">Билет алу</a>
+</div>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top" aria-labelledby="h1">
+  <div class="hero-media"><img src="img/hero.webp" alt="Концерт залы: қызыл орындықтар, сахна және хрусталь люстра" data-ru-alt="Концертный зал: красные кресла, сцена и хрустальная люстра" width="1600" height="900" fetchpriority="high"></div>
+  <div class="wrap hero-content">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow" data-in data-ru="85-й сезон · Павлодар">85-маусым · Павлодар</p>
+        <h1 id="h1" style="margin-top:18px">
+          <span class="h1-line"><span data-ru="Филармония">Иса Байзақов</span></span>
+          <span class="h1-line"><span data-ru="имени Исы Байзакова">атындағы филармония</span></span>
+        </h1>
+        <p class="hero-lead" data-in data-ru="Концертный зал на 428 мест в центре Павлодара: симфоническая и народная музыка, джаз, хор и танец.">Павлодар орталығындағы 428 орындық концерт залы: симфониялық және халық музыкасы, джаз, хор мен би.</p>
+        <div class="hero-ctas" data-in>
+          <a class="btn btn-seat" href="#afisha"><span data-ru="Смотреть афишу">Афишаны қарау</span><svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8h12M9 3l5 5-5 5"/></svg></a>
+        </div>
+      </div>
+      <article class="next" data-in aria-labelledby="next-t">
+        <div class="next-top"><span><i></i><span data-ru="Ближайший концерт">Жақын концерт</span></span><span>2026</span></div>
+        <div class="next-date"><b class="tnum">05</b><span data-ru="декабря, суббота<br>18:00 · большой зал">желтоқсан, сенбі<br>18:00 · үлкен зал</span></div>
+        <p class="next-title" id="next-t" data-ru="Праздничный концерт к 85-летию филармонии">Филармонияның 85 жылдығына арналған мерекелік концерт</p>
+        <a class="btn btn-seat" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener"><span data-ru="Билеты от 3 000 ₸">Билет · 3 000 ₸-ден</span><svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8h12M9 3l5 5-5 5"/></svg></a>
+      </article>
+    </div>
+    <div class="facts" data-in>
+      <div><b class="tnum">1941</b><span data-ru="год основания">құрылған жыл</span></div>
+      <div><b class="tnum">428</b><span data-ru="мест в зале">залдағы орын</span></div>
+      <div><b class="tnum">8</b><span data-ru="коллективов">ұжым</span></div>
+      <div><b class="tnum">8 × 8 м</b><span data-ru="сцена">сахна</span></div>
+    </div>
+  </div>
+</section>
+<div class="ochre-rule" aria-hidden="true"></div>
+
+<!-- ============ AFISHA ============ -->
+<section class="sec" id="afisha" aria-labelledby="afisha-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="afisha-h">Афиша</h2>
+      <p data-ru="Билеты продаются в кассе филармонии и онлайн на Freedom Ticketon">Билеттер филармония кассасында және Freedom Ticketon сайтында сатылады</p>
+    </div>
+    <div class="month"><b data-ru="Декабрь 2026">Желтоқсан 2026</b><span class="eyebrow" id="ev-count"></span></div>
+    <div class="chips" role="group" aria-label="Жанр" data-ru-label="Жанр">
+      <button class="chip" type="button" data-g="all" aria-pressed="true" data-ru="Все">Барлығы</button>
+      <button class="chip" type="button" data-g="sym" aria-pressed="false" data-ru="Симфоническая">Симфониялық</button>
+      <button class="chip" type="button" data-g="folk" aria-pressed="false" data-ru="Народная">Халық музыкасы</button>
+      <button class="chip" type="button" data-g="jazz" aria-pressed="false">Джаз</button>
+      <button class="chip" type="button" data-g="choir" aria-pressed="false">Хор</button>
+      <button class="chip" type="button" data-g="dance" aria-pressed="false" data-ru="Танец">Би</button>
+      <button class="chip" type="button" data-g="kids" aria-pressed="false" data-ru="Детям">Балаларға</button>
+    </div>
+    <!-- SAMPLE programme: replace with the real December schedule -->
+    <ul class="events" id="events">
+      <li class="ev" data-g="sym folk jazz choir dance" data-img="0">
+        <span class="ev-day tnum">05</span>
+        <span class="ev-when"><b data-ru="суббота">сенбі</b>18:00</span>
+        <span class="ev-thumb"><img src="img/seats.webp" alt="" loading="lazy"></span>
+        <div class="ev-t"><h3 data-ru="Праздничный концерт к 85-летию филармонии">Филармонияның 85 жылдығына арналған мерекелік концерт</h3><p data-ru="Все коллективы филармонии">Филармонияның барлық ұжымдары</p></div>
+        <span class="ev-price tnum" data-ru="от 3 000 ₸">3 000 ₸-ден</span>
+        <a class="btn btn-seat btn-sm" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener" data-ru="Билеты">Билет</a>
+      </li>
+      <li class="ev" data-g="kids" data-img="1">
+        <span class="ev-day tnum">06</span>
+        <span class="ev-when"><b data-ru="воскресенье">жексенбі</b>12:00</span>
+        <span class="ev-thumb"><img src="img/c-lad.webp" alt="" loading="lazy"></span>
+        <div class="ev-t"><h3 data-ru="Сказка с оркестром">Оркестрмен ертегі</h3><p data-ru="Ансамбль «Лад» · для детей 6+">«Лад» ансамблі · 6+ балаларға</p></div>
+        <span class="ev-price tnum" data-ru="от 1 500 ₸">1 500 ₸-ден</span>
+        <a class="btn btn-seat btn-sm" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener" data-ru="Билеты">Билет</a>
+      </li>
+      <li class="ev" data-g="sym" data-img="2">
+        <span class="ev-day tnum">12</span>
+        <span class="ev-when"><b data-ru="суббота">сенбі</b>18:00</span>
+        <span class="ev-thumb"><img src="img/c-symph.webp" alt="" loading="lazy"></span>
+        <div class="ev-t"><h3 data-ru="Моцарт и Чайковский">Моцарт және Чайковский</h3><p data-ru="Симфонический оркестр · дирижёр Диас Усенов">Симфониялық оркестр · дирижер Диас Үсенов</p></div>
+        <span class="ev-price tnum" data-ru="от 2 500 ₸">2 500 ₸-ден</span>
+        <a class="btn btn-seat btn-sm" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener" data-ru="Билеты">Билет</a>
+      </li>
+      <li class="ev" data-g="folk" data-img="3">
+        <span class="ev-day tnum">13</span>
+        <span class="ev-when"><b data-ru="воскресенье">жексенбі</b>17:00</span>
+        <span class="ev-thumb"><img src="img/c-omarov.webp" alt="" loading="lazy"></span>
+        <div class="ev-t"><h3 data-ru="Вечер кюя">Күй кеші</h3><p data-ru="Оркестр им. Р. Омарова · Талгат Каримов">Р. Омаров атындағы оркестр · Талғат Кәрімов</p></div>
+        <span class="ev-price tnum" data-ru="от 2 000 ₸">2 000 ₸-ден</span>
+        <a class="btn btn-seat btn-sm" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener" data-ru="Билеты">Билет</a>
+      </li>
+      <li class="ev" data-g="choir" data-img="4">
+        <span class="ev-day tnum">19</span>
+        <span class="ev-when"><b data-ru="суббота">сенбі</b>18:00</span>
+        <span class="ev-thumb"><img src="img/c-choir.webp" alt="" loading="lazy"></span>
+        <div class="ev-t"><h3 data-ru="Зимний вечер хоровой музыки">Қысқы хор кеші</h3><p data-ru="Камерный хор · Мадина Нургожинова">Камералық хор · Мадина Нұрғожинова</p></div>
+        <span class="ev-price tnum" data-ru="от 2 000 ₸">2 000 ₸-ден</span>
+        <a class="btn btn-seat btn-sm" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener" data-ru="Билеты">Билет</a>
+      </li>
+      <li class="ev" data-g="dance" data-img="5">
+        <span class="ev-day tnum">20</span>
+        <span class="ev-when"><b data-ru="воскресенье">жексенбі</b>17:00</span>
+        <span class="ev-thumb"><img src="img/c-nur.webp" alt="" loading="lazy"></span>
+        <div class="ev-t"><h3 data-ru="«Нұр» и «Шернияз»: вечер танца">«Нұр» мен «Шернияз»: би кеші</h3><p data-ru="Два ансамбля танца филармонии">Филармонияның екі би ансамблі</p></div>
+        <span class="ev-price tnum" data-ru="от 2 500 ₸">2 500 ₸-ден</span>
+        <a class="btn btn-seat btn-sm" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener" data-ru="Билеты">Билет</a>
+      </li>
+      <li class="ev" data-g="jazz" data-img="6">
+        <span class="ev-day tnum">26</span>
+        <span class="ev-when"><b data-ru="суббота">сенбі</b>19:00</span>
+        <span class="ev-thumb"><img src="img/c-jazz.webp" alt="" loading="lazy"></span>
+        <div class="ev-t"><h3 data-ru="Новогодний джаз">Жаңа жылдық джаз</h3><p data-ru="Джазовый оркестр · Виктор Шейкин">Джаз оркестрі · Виктор Шейкин</p></div>
+        <span class="ev-price tnum" data-ru="от 3 500 ₸">3 500 ₸-ден</span>
+        <a class="btn btn-seat btn-sm" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener" data-ru="Билеты">Билет</a>
+      </li>
+    </ul>
+    <div class="afisha-foot">
+      <span data-ru="Касса: 68-02-94, 22-80-87">Касса: 68-02-94, 22-80-87</span>
+      <a class="link" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener"><span data-ru="Вся афиша на Freedom Ticketon">Барлық афиша Freedom Ticketon-да</span><svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8h12M9 3l5 5-5 5"/></svg></a>
+    </div>
+  </div>
+  <div class="preview" id="preview" aria-hidden="true">
+    <img src="img/seats.webp" alt="" loading="lazy"><img src="img/c-lad.webp" alt="" loading="lazy"><img src="img/c-symph.webp" alt="" loading="lazy"><img src="img/c-omarov.webp" alt="" loading="lazy"><img src="img/c-choir.webp" alt="" loading="lazy"><img src="img/c-nur.webp" alt="" loading="lazy"><img src="img/c-jazz.webp" alt="" loading="lazy">
+  </div>
+</section>
+
+<!-- ============ COLLECTIVES ============ -->
+<section class="sec cols-sec" id="ujymdar" aria-labelledby="cols-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="cols-h" data-ru="Коллективы">Ұжымдар</h2>
+      <p data-ru="Восемь профессиональных коллективов: от кобыза до фагота">Сегіз кәсіби ұжым: қобыздан фаготқа дейін</p>
+    </div>
+    <div class="cols">
+      <a class="col w7" href="#afisha"><div class="col-media"><div class="col-zoom"><img src="img/c-omarov.webp" alt="Оркестр көк ұлттық киімде, домбыра мен қобызбен" data-ru-alt="Оркестр в синих национальных костюмах с домбрами и кобызами" loading="lazy" width="904" height="604"></div></div><h3 data-ru="Оркестр казахских народных инструментов им. Рустембека Омарова">Рүстембек Омаров атындағы қазақ халық аспаптар оркестрі</h3><p data-ru="Главный дирижёр Талгат Каримов, заслуженный деятель Казахстана">Бас дирижер Талғат Кәрімов, ҚР еңбек сіңірген қайраткері</p></a>
+      <a class="col w5" href="#afisha"><div class="col-media"><div class="col-zoom"><img src="img/c-symph.webp" alt="Симфониялық оркестр сахнада" data-ru-alt="Симфонический оркестр на сцене" loading="lazy" width="929" height="620"></div></div><h3 data-ru="Симфонический оркестр">Симфониялық оркестр</h3><p data-ru="Дирижёр Диас Усенов">Дирижер Диас Үсенов</p></a>
+      <a class="col half" href="#afisha"><div class="col-media"><div class="col-zoom"><img src="img/c-jazz.webp" alt="Джаз оркестрі ақ пиджактарда, саксофондармен" data-ru-alt="Джазовый оркестр в белых пиджаках с саксофонами" loading="lazy" width="893" height="595"></div></div><h3 data-ru="Джазовый оркестр">Джаз оркестрі</h3><p>Виктор Шейкин</p></a>
+      <a class="col half" href="#afisha"><div class="col-media"><div class="col-zoom"><img src="img/c-choir.webp" alt="Камералық хор сахнада" data-ru-alt="Камерный хор на сцене" loading="lazy" width="893" height="595"></div></div><h3 data-ru="Камерный хор">Камералық хор</h3><p data-ru="Мадина Нургожинова">Мадина Нұрғожинова</p></a>
+      <a class="col half" href="#afisha"><div class="col-media"><div class="col-zoom"><img src="img/c-nur.webp" alt="«Нұр» ансамблінің бишілері көгілдір-қоңыр киімде" data-ru-alt="Танцовщицы ансамбля «Нұр» в бирюзово-коричневых костюмах" loading="lazy" width="900" height="648"></div></div><h3 data-ru="Ансамбль танца «Нұр»">«Нұр» би ансамблі</h3><p data-ru="Айгуль Даирбаева">Айгүл Дайырбаева</p></a>
+      <a class="col half" href="#afisha"><div class="col-media"><div class="col-zoom"><img src="img/c-shernyaz.webp" alt="«Шернияз» ансамблінің бишілері ұлттық киімде" data-ru-alt="Танцоры ансамбля «Шернияз» в национальных костюмах" loading="lazy" width="891" height="595"></div></div><h3 data-ru="Ансамбль танца «Шернияз»">«Шернияз» би ансамблі</h3><p data-ru="Нурлан Беков">Нұрлан Беков</p></a>
+      <a class="col half" href="#afisha"><div class="col-media"><div class="col-zoom"><img src="img/c-lad.webp" alt="«Лад» ансамблі балалайкалармен" data-ru-alt="Ансамбль «Лад» с балалайками" loading="lazy" width="900" height="601"></div></div><h3 data-ru="Ансамбль русских народных инструментов «Лад»">«Лад» орыс халық аспаптар ансамблі</h3><p>Оксана Петрушкина</p></a>
+      <a class="col half" href="#afisha"><div class="col-media"><div class="col-zoom"><img src="img/c-retro.webp" alt="«Ретро» вокалдық ансамблінің әншілері" data-ru-alt="Солистки вокального ансамбля «Ретро»" loading="lazy" width="900" height="600"></div></div><h3 data-ru="Вокальный ансамбль «Ретро»">«Ретро» вокалдық ансамблі</h3><p data-ru="Айжан Жетписбаева">Айжан Жетпісбаева</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HALL: arch reveal ============ -->
+<section id="zal" aria-labelledby="zal-h">
+  <div class="hall-intro">
+    <div class="hall-word" aria-hidden="true">Зал</div>
+    <div class="arch-reveal" id="arch"><img src="img/facade.webp" alt="Филармония ғимаратының қасбеті: үш арка және ақ бағандар" data-ru-alt="Фасад филармонии: три арки и белые колонны" loading="lazy" width="1400" height="811"></div>
+    <div class="hall-cap on-dark" style="background:transparent">
+      <div class="wrap">
+        <p class="eyebrow" data-ru="Зал · с 1963 года">Зал · 1963 жылдан</p>
+        <h2 id="zal-h" style="margin-top:12px" data-ru="Памятник архитектуры в центре города">Қала орталығындағы сәулет ескерткіші</h2>
+        <p data-ru="Здание открыто 12 ноября 1963 года и охраняется государством.">Ғимарат 1963 жылғы 12 қарашада ашылған, мемлекет қорғауында.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap chapters">
+    <div class="ch-stage" aria-hidden="true">
+      <div class="ch-frame" id="chframe">
+        <img class="on" src="img/foyer.webp" alt="" loading="lazy"><img src="img/stucco.webp" alt="" loading="lazy"><img src="img/chandelier.webp" alt="" loading="lazy"><img src="img/seats.webp" alt="" loading="lazy">
+      </div>
+    </div>
+    <div class="ch-list">
+      <div class="ch" data-i="0">
+        <div class="ch-img"><img src="img/foyer.webp" alt="Орталық фойе: аркалар мен әшекейлер" data-ru-alt="Центральное фойе: арки и лепнина" loading="lazy"></div>
+        <span class="eyebrow tnum">181,5 м²</span>
+        <h3 data-ru="Фойе в стиле рококо">Рококо стиліндегі фойе</h3>
+        <p data-ru="До наших дней сохранились глиняная лепка и венецианские маски над арками.">Бүгінге дейін саз балшықтан жасалған әшекейлер мен аркалар үстіндегі венециялық маскалар сақталған.</p>
+      </div>
+      <div class="ch" data-i="1">
+        <div class="ch-img"><img src="img/stucco.webp" alt="Ажурлы әшекей мен шамдар" data-ru-alt="Ажурная лепнина и светильники" loading="lazy"></div>
+                <h3 data-ru="Ажурный декор">Ажурлы әшекей</h3>
+        <p data-ru="Порталы, пилястры и арки выдержаны в одной гамме. Интерьер звучит так же торжественно, как фасад.">Порталдар, пилястрлар мен аркалар бір түсте. Интерьер қасбет сияқты салтанатты.</p>
+      </div>
+      <div class="ch" data-i="2">
+        <div class="ch-img"><img src="img/chandelier.webp" alt="Көп қабатты хрусталь люстра" data-ru-alt="Многоярусная хрустальная люстра" loading="lazy"></div>
+                <h3 data-ru="Единственная такая в Павлодаре">Павлодардағы жалғыз осындай люстра</h3>
+        <p data-ru="Многоярусная, дворцового типа. Свет отражается в хрустале и позолоте.">Көп қабатты, сарай үлгісінде. Жарық хрусталь мен алтын жалатуда шағылысады.</p>
+      </div>
+      <div class="ch" data-i="3">
+        <div class="ch-img"><img src="img/seats.webp" alt="Партер пен сахна" data-ru-alt="Партер и сцена" loading="lazy"></div>
+                <h3 data-ru="428 мест и сцена 8 × 8 м">428 орын және 8 × 8 м сахна</h3>
+        <p data-ru="Высота зала 8,7 метра. Есть два небольших балкона.">Зал биіктігі 8,7 метр. Екі шағын балкон бар.</p>
+        <div class="seats">
+          <div><b class="tnum">234</b><span data-ru="партер">партер</span></div>
+          <div><b class="tnum">194</b><span data-ru="амфитеатр">амфитеатр</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 85 ============ -->
+<section class="on-dark" id="tarih" aria-labelledby="tarih-h">
+  <div class="y85">
+    <div class="arc a1" data-speed="0.9"><img src="img/a-1970s.webp" alt="Филармония әртістері, 1970-жылдар" data-ru-alt="Артисты филармонии, 1970-е годы" loading="lazy"></div>
+    <div class="arc a2" data-speed="0.5"><img src="img/a-singer.webp" alt="Әнші сахнада, мұрағаттық фото" data-ru-alt="Певица на сцене, архивное фото" loading="lazy"></div>
+    <div class="arc a3" data-speed="1.2"><img src="img/a-piano.webp" alt="Пианинода ойнап жатқан музыканттар, мұрағат" data-ru-alt="Музыканты за роялем, архив" loading="lazy"></div>
+    <div class="wrap y85-grid">
+      <div class="big85 tnum" aria-hidden="true">85</div>
+      <div class="y85-txt">
+                <h2 id="tarih-h" data-ru="<span class='sr'>85 </span>сезонов с 1941 года"><span class="sr">85 </span>маусым 1941 жылдан бері</h2>
+        <p data-ru="С 1971 года филармония носит имя Исы Байзакова (1900–1946), акына, композитора и певца. В 1950 году её артисты дали больше тысячи концертов, 949 из них в сёлах.">1971 жылдан бері филармония ақын, композитор және әнші Иса Байзақовтың (1900–1946) есімін алып жүр. 1950 жылы әртістер мыңнан астам концерт берді, оның 949-ы ауылдарда.</p>
+      </div>
+    </div>
+  </div>
+  <div class="tl-pin" id="tl">
+    <div class="wrap">
+      <div class="tl-head"><h3 data-ru="Шесть вех">Алты белес</h3></div>
+      <div class="tl-prog" aria-hidden="true"><i id="tlbar"></i></div>
+    </div>
+    <div class="tl-track" id="track">
+      <div class="yr doc"><b class="tnum">1941</b><p data-ru="5 декабря издан первый приказ Павлодарского филиала Казахской госфилармонии им. Джамбула.">5 желтоқсанда Жамбыл атындағы Қазақ мемлекеттік филармониясының Павлодар филиалының алғашқы бұйрығы шықты.</p><figure><img src="img/a-order.webp" alt="1941 жылғы қолжазба бұйрық" data-ru-alt="Рукописный приказ 1941 года" loading="lazy"></figure></div>
+      <div class="yr"><b class="tnum">1943</b><p data-ru="Горсовет передаёт филиалу здание Ак мечети.">Қалалық кеңес филиалға Ақ мешіт ғимаратын берді.</p></div>
+      <div class="yr"><b class="tnum">1946</b><p data-ru="Филиал становится областным концертно-эстрадным бюро.">Филиал облыстық концерттік-эстрадалық бюро болды.</p><figure><img src="img/a-stage.webp" alt="Эстрадалық топ сахнада, мұрағат" data-ru-alt="Эстрадная группа на сцене, архив" loading="lazy"></figure></div>
+      <div class="yr"><b class="tnum">1965</b><p data-ru="1 декабря: самостоятельная Павлодарская областная филармония.">1 желтоқсан: дербес Павлодар облыстық филармониясы.</p></div>
+      <div class="yr"><b class="tnum">1971</b><p data-ru="К 70-летию акына филармонии присвоено имя Исы Байзакова.">Ақынның 70 жылдығына орай филармонияға Иса Байзақовтың есімі берілді.</p><figure><img src="img/a-band.webp" alt="Филармония ансамблі, 1970-жылдар" data-ru-alt="Ансамбль филармонии, 1970-е" loading="lazy"></figure></div>
+      <div class="yr"><b class="tnum">2026</b><p data-ru="Юбилейный 85-й сезон открылся концертом симфонического оркестра.">85-мерейтойлық маусым симфониялық оркестр концертімен ашылды.</p><a class="btn btn-line btn-sm" href="#afisha" style="justify-self:start" data-ru="Афиша сезона">Маусым афишасы</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEWS ============ -->
+<section class="sec" id="news" aria-labelledby="news-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="news-h" data-ru="Новости">Жаңалықтар</h2>
+      <a class="link" href="#news"><span data-ru="Все новости">Барлық жаңалықтар</span><svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8h12M9 3l5 5-5 5"/></svg></a>
+    </div>
+    <div class="news">
+      <a class="post" href="#news"><div class="post-media"><img src="img/c-symph.webp" alt="" loading="lazy"></div><time datetime="2026-08-21" data-ru="21 августа 2026">21 тамыз 2026</time><h3 data-ru="Юбилейный 85-й сезон откроется концертом симфонического оркестра">85-мерейтойлық маусым симфониялық оркестр концертімен ашылады</h3></a>
+      <a class="post" href="#news"><div class="post-media"><img src="img/c-omarov.webp" alt="" loading="lazy"></div><time datetime="2026-08-21" data-ru="21 августа 2026">21 тамыз 2026</time><h3 data-ru="От кобыза до фагота">Қобыздан фаготқа дейін</h3></a>
+      <a class="post" href="#news"><div class="post-media"><img src="img/rehearsal.webp" alt="" loading="lazy"></div><time datetime="2026-08-21" data-ru="21 августа 2026">21 тамыз 2026</time><h3 data-ru="«Нұр» выступит на открытии VI Всемирных игр кочевников в Бишкеке">«Нұр» Бішкектегі VI Дүниежүзілік көшпенділер ойындарының ашылуында өнер көрсетеді</h3></a>
+    </div>
+    <div class="projects">
+      <span class="eyebrow" data-ru="Проекты филармонии">Филармония жобалары</span>
+      <ul>
+        <li><a href="#news">Самға</a></li>
+        <li><a href="#news">Тағылым</a></li>
+        <li><a href="#news">Ән аманат</a></li>
+        <li><a href="#news">Алтын бесік — туған ел</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VISIT ============ -->
+<section class="sec visit" id="kelushilerge" aria-labelledby="visit-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="visit-h" data-ru="Посетителям">Келушілерге</h2>
+    </div>
+    <div class="visit-grid">
+      <div class="card buy">
+        <h3 data-ru="Как купить билет">Билетті қалай алуға болады</h3>
+        <p data-ru="Онлайн на Freedom Ticketon: место выбираете на схеме зала, билет приходит на почту. На месте в кассе филармонии.">Онлайн Freedom Ticketon сайтында: орынды зал сызбасынан таңдайсыз, билет поштаға келеді. Қолма-қол филармония кассасында.</p>
+        <a class="btn btn-seat" href="https://ticketon.kz/place/pavlodarskaya-filarmonia" target="_blank" rel="noopener"><span data-ru="Купить на Freedom Ticketon">Freedom Ticketon-да алу</span><svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8h12M9 3l5 5-5 5"/></svg></a>
+        <p class="kassa tnum" style="align-self:end" data-ru="Касса филармонии: 68-02-94, 22-80-87, +7&nbsp;705&nbsp;536&nbsp;78&nbsp;51">Филармония кассасы: 68-02-94, 22-80-87, +7&nbsp;705&nbsp;536&nbsp;78&nbsp;51</p>
+      </div>
+      <div class="card">
+        <h3 data-ru="Адрес">Мекенжай</h3>
+        <div class="map-arch"><img src="img/facade.webp" alt="" loading="lazy"></div>
+        <p class="v" data-ru="проспект Назарбаева, 1, Павлодар">Н. Назарбаев даңғылы, 1, Павлодар</p>
+        <a class="link" href="https://2gis.kz/pavlodar/search/%D0%A4%D0%B8%D0%BB%D0%B0%D1%80%D0%BC%D0%BE%D0%BD%D0%B8%D1%8F%20%D0%B8%D0%BC%D0%B5%D0%BD%D0%B8%20%D0%98%D1%81%D1%8B%20%D0%91%D0%B0%D0%B9%D0%B7%D0%B0%D0%BA%D0%BE%D0%B2%D0%B0" target="_blank" rel="noopener"><span data-ru="Открыть в 2ГИС">2ГИС-те ашу</span><svg class="arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8h12M9 3l5 5-5 5"/></svg></a>
+      </div>
+      <div class="card">
+        <h3 data-ru="Контакты">Байланыс</h3>
+        <ul>
+          <li><span class="k" data-ru="Приёмная">Қабылдау бөлмесі</span><a class="v tnum" href="tel:+77182228087">+7&nbsp;(7182)&nbsp;22-80-87</a></li>
+          <li><span class="k" data-ru="Касса">Касса</span><span class="v tnum"><a href="tel:+77182680294">68-02-94</a> · <a href="tel:+77055367851">+7&nbsp;705&nbsp;536&nbsp;78&nbsp;51</a></span></li>
+          <li><span class="k">E-mail</span><a class="v" href="mailto:isa.baizakov2012@yandex.kz">isa.baizakov2012@yandex.kz</a></li>
+          <li><span class="k">Instagram</span><a class="v" href="https://www.instagram.com/isa_philharmonic/" target="_blank" rel="noopener">@isa_philharmonic</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot on-dark">
+  <div class="wrap">
+    <div class="foot-top">
+      <div><p class="foot-brand" data-ru="Филармония<br>имени Исы Байзакова">Иса Байзақов<br>атындағы филармония</p></div>
+      <div><h4 data-ru="Сайт">Сайт</h4><ul><li><a href="#afisha">Афиша</a></li><li><a href="#ujymdar" data-ru="Коллективы">Ұжымдар</a></li><li><a href="#zal">Зал</a></li><li><a href="#tarih" data-ru="История">Тарих</a></li></ul></div>
+      <div><h4 data-ru="О филармонии">Филармония туралы</h4><ul><li><a href="#tarih" data-ru="Руководство">Басшылық</a></li><li><a href="#news" data-ru="СМИ о нас">БАҚ біз туралы</a></li><li><a href="#news" data-ru="Вакансии">Бос жұмыс орындары</a></li><li><a href="#top" data-ru="Версия для слабовидящих">Нашар көретіндерге</a></li></ul></div>
+      <div><h4 data-ru="Документы">Құжаттар</h4><ul><li><a href="#top" data-ru="Комплаенс">Комплаенс</a></li><li><a href="#top" data-ru="Противодействие коррупции">Сыбайлас жемқорлыққа қарсы іс-қимыл</a></li><li><a href="#top" data-ru="Госсфера">Мемлекеттік сала</a></li></ul></div>
+    </div>
+    <div class="foot-bot">
+      <span data-ru="© 2026 Павлодарская областная филармония имени Исы Байзакова">© 2026 Павлодар облыстық Иса Байзақов атындағы филармониясы</span>
+      <span data-ru="проспект Назарбаева, 1, Павлодар">Н. Назарбаев даңғылы, 1, Павлодар</span>
+    </div>
+  </div>
+</footer>
+
+<div class="actbar" id="actbar">
+  <a class="btn btn-seat" href="#afisha" data-ru="Купить билет">Билет алу</a>
+  <a class="btn btn-ink" href="#afisha">Афиша</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- language ---------- */
+  var tr=$$('[data-ru]'), alts=$$('[data-ru-alt]'), labels=$$('[data-ru-label]');
+  tr.forEach(function(el){el.dataset.kk=el.innerHTML});
+  alts.forEach(function(el){el.dataset.kkAlt=el.alt});
+  labels.forEach(function(el){el.dataset.kkLabel=el.getAttribute('aria-label')});
+  function setLang(l){
+    document.documentElement.lang=l;
+    tr.forEach(function(el){el.innerHTML=l==='ru'?el.dataset.ru:el.dataset.kk});
+    alts.forEach(function(el){el.alt=l==='ru'?el.dataset.ruAlt:el.dataset.kkAlt});
+    labels.forEach(function(el){el.setAttribute('aria-label',l==='ru'?el.dataset.ruLabel:el.dataset.kkLabel)});
+    $$('.lang button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.lang===l))});
+    updateCount();
+    try{localStorage.setItem('phil-lang',l)}catch(e){}
+    if(window.ScrollTrigger) ScrollTrigger.refresh();
+  }
+  $$('.lang button').forEach(function(b){b.addEventListener('click',function(){setLang(b.dataset.lang)})});
+
+  /* ---------- afisha filter ---------- */
+  var evs=$$('#events .ev'), cur='all';
+  function updateCount(){
+    var n=evs.filter(function(e){return !e.hidden}).length, ru=document.documentElement.lang==='ru';
+    $('#ev-count').textContent=ru?(n+' '+(n%10===1&&n%100!==11?'концерт':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'концерта':'концертов'))):(n+' концерт');
+  }
+  $$('.chip').forEach(function(c){c.addEventListener('click',function(){
+    cur=c.dataset.g;
+    $$('.chip').forEach(function(x){x.setAttribute('aria-pressed',String(x===c))});
+    evs.forEach(function(e){e.hidden=!(cur==='all'||e.dataset.g.split(' ').indexOf(cur)>-1)});
+    updateCount(); if(window.ScrollTrigger) ScrollTrigger.refresh();
+  })});
+
+  var saved='kk'; try{saved=localStorage.getItem('phil-lang')||'kk'}catch(e){}
+  setLang(saved==='ru'?'ru':'kk');
+
+  /* ---------- header, menu, action bar ---------- */
+  var head=$('#head'), bar=$('#actbar'), hero=$('.hero');
+  function onScroll(){
+    var y=window.scrollY;
+    head.classList.toggle('solid',y>40);
+    bar.classList.toggle('show',y>hero.offsetHeight*.7);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  var menu=$('#menu'), burger=$('.head .burger');
+  function openMenu(o){menu.hidden=!o;burger.setAttribute('aria-expanded',String(o));document.body.style.overflow=o?'hidden':'';if(o)$('a',menu).focus();else burger.focus()}
+  burger.addEventListener('click',function(){openMenu(true)});
+  $('[data-close]',menu).addEventListener('click',function(){openMenu(false)});
+  $$('a',menu).forEach(function(a){a.addEventListener('click',function(){menu.hidden=true;burger.setAttribute('aria-expanded','false');document.body.style.overflow=''})});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!menu.hidden)openMenu(false)});
+
+  /* ---------- smooth scroll for in-page links only (Tab focus stays instant) ---------- */
+  $$('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var id=a.getAttribute('href');if(id.length<2)return;var t=document.querySelector(id);if(!t)return;e.preventDefault();t.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});if(id==='#main'){t.setAttribute('tabindex','-1');t.focus({preventScroll:true})}})});
+
+  /* ---------- hall chapters: switch the arched photo ---------- */
+  var frames=$$('#chframe img');
+  function showFrame(i){frames.forEach(function(f,k){f.classList.toggle('on',k===i)})}
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)showFrame(+e.target.dataset.i)})},{rootMargin:'-45% 0px -45% 0px'});
+    $$('.ch').forEach(function(c){io.observe(c)});
+  }
+
+  /* ---------- GSAP layer ---------- */
+  if(!window.gsap||!window.ScrollTrigger||reduce) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm=gsap.matchMedia();
+
+  // hero entrance (once)
+  var intro=gsap.timeline({defaults:{ease:'power3.out'}});
+  intro.from('.hero-media img',{scale:1.16,duration:2.4,ease:'power2.out'},0)
+       .from('.h1-line>span',{yPercent:105,duration:1.15,stagger:.12},.15)
+       .from('.hero [data-in]',{y:28,autoAlpha:0,duration:.9,stagger:.09},.55)
+       .from('.head',{autoAlpha:0,y:-12,duration:.8},.5);
+
+  // hero parallax
+  gsap.to('.hero-media img',{yPercent:14,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('.hero-content',{yPercent:-12,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+
+  // collectives: photo drifts inside its frame
+  $$('.col-media img').forEach(function(img){
+    gsap.fromTo(img,{yPercent:-6},{yPercent:6,ease:'none',scrollTrigger:{trigger:img.closest('.col-media'),start:'top bottom',end:'bottom top',scrub:true}});
+  });
+
+  // hall: the arch opens to full screen
+  mm.add({desk:'(min-width: 900px)',mob:'(max-width: 899px)'},function(ctx){
+    var d=ctx.conditions.desk;
+    var tl=gsap.timeline({scrollTrigger:{trigger:'.hall-intro',start:'top top',end:'+=110%',scrub:.6,pin:true,anticipatePin:1}});
+    tl.fromTo('#arch',{clipPath:d?'inset(14% 37% 0% 37% round 999px 999px 0px 0px)':'inset(22% 14% 0% 14% round 999px 999px 0px 0px)'},{clipPath:'inset(0% 0% 0% 0% round 0px 0px 0px 0px)',ease:'none',duration:1},0)
+      .fromTo('#arch img',{scale:1.1},{scale:1,ease:'none',duration:1},0)
+      .fromTo('.hall-word',{scale:1},{scale:.86,ease:'none',duration:1},0)
+      .fromTo('.hall-cap .wrap>*',{y:40,autoAlpha:0},{y:0,autoAlpha:1,stagger:.06,duration:.35,ease:'power2.out'},.7);
+
+    // timeline: horizontal on desktop
+    if(d){
+      var track=$('#track'); $('#tl').classList.add('tl-h');
+      var dist=function(){return Math.max(0,track.scrollWidth-window.innerWidth)};
+      var htl=gsap.timeline({scrollTrigger:{trigger:'#tl',start:'top top+=72',end:function(){return '+='+dist()},scrub:.5,pin:true,anticipatePin:1,invalidateOnRefresh:true}});
+      htl.to(track,{x:function(){return -dist()},ease:'none'},0).fromTo('#tlbar',{scaleX:.08},{scaleX:1,ease:'none'},0);
+    }
+  });
+
+  // 85: archive photos drift at different speeds, the number settles
+  $$('.arc').forEach(function(a){
+    var s=parseFloat(a.dataset.speed)||1;
+    gsap.fromTo(a,{y:60*s},{y:-60*s,ease:'none',scrollTrigger:{trigger:'.y85',start:'top bottom',end:'bottom top',scrub:true}});
+  });
+  gsap.fromTo('.big85',{yPercent:12,scale:.94},{yPercent:-6,scale:1,ease:'none',scrollTrigger:{trigger:'.y85',start:'top bottom',end:'bottom top',scrub:true}});
+
+  // afisha: arched photo follows the cursor
+  if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+    var pv=$('#preview'), pimgs=$$('img',pv);
+    gsap.set(pv,{xPercent:-50,yPercent:-50,scale:.94});
+    var xTo=gsap.quickTo(pv,'x',{duration:.55,ease:'power3'}), yTo=gsap.quickTo(pv,'y',{duration:.55,ease:'power3'});
+    var list=$('#events');
+    list.addEventListener('mousemove',function(e){xTo(e.clientX+190);yTo(e.clientY)});
+    evs.forEach(function(r){
+      r.addEventListener('mouseenter',function(){pimgs.forEach(function(im,k){im.classList.toggle('on',k===+r.dataset.img)});gsap.to(pv,{autoAlpha:1,scale:1,duration:.35,ease:'power3.out'})});
+    });
+    list.addEventListener('mouseleave',function(){gsap.to(pv,{autoAlpha:0,scale:.94,duration:.2,ease:'power2.out'})});
+  }
+
+  window.addEventListener('load',function(){ScrollTrigger.refresh()});
+})();
+</script>
+
+</body>
+</html>

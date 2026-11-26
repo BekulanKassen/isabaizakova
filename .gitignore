@@ -1,0 +1,5 @@
+node_modules/
+shots/
+.taste-skill/
+.DS_Store
+*.zip

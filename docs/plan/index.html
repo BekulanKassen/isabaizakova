@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сайт филармонии Байзакова</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+/* Layout: one reading column (analysis, plan) + a wide framed wireframe with a desktop/phone switch. */
+:root{
+  --ground:#F3F2EE; --surface:#FFFFFF; --ink:#16201E; --ink-2:#4A524F; --ink-3:#7A817E;
+  --line:rgba(22,32,30,.12); --accent:#8A1C2B; --accent-ink:#FFFFFF; --ochre:#E2B04A; --mint:#DCE5D3; --gold:#B08A3A;
+  --sev-hi:#A3261B; --sev-mid:#9A6A08; --sev-ok:#2F6B4A;
+  --wf-bg:#ECEBE7; --wf-box:#D6D5D0; --wf-box-2:#C4C3BD; --wf-ink:#2B2F2E; --wf-ink-2:#6C716F; --wf-note:#8A1C2B;
+  --f-display:"Prata",Georgia,"Times New Roman",serif;
+  --f-text:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#121716; --surface:#1A2120; --ink:#ECEDEA; --ink-2:#B5BBB8; --ink-3:#8C9390;
+  --line:rgba(236,237,234,.14); --accent:#D9616F; --accent-ink:#1A0A0D; --ochre:#E2B04A; --mint:#2C3A33; --gold:#D3B26A;
+  --sev-hi:#F07D72; --sev-mid:#E2B04A; --sev-ok:#7CC39B;
+  --wf-bg:#1E2524; --wf-box:#2E3634; --wf-box-2:#3A4341; --wf-ink:#E6E8E5; --wf-ink-2:#9FA6A3; --wf-note:#E58891; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#121716; --surface:#1A2120; --ink:#ECEDEA; --ink-2:#B5BBB8; --ink-3:#8C9390;
+  --line:rgba(236,237,234,.14); --accent:#D9616F; --accent-ink:#1A0A0D; --ochre:#E2B04A; --mint:#2C3A33; --gold:#D3B26A;
+  --sev-hi:#F07D72; --sev-mid:#E2B04A; --sev-ok:#7CC39B;
+  --wf-bg:#1E2524; --wf-box:#2E3634; --wf-box-2:#3A4341; --wf-ink:#E6E8E5; --wf-ink-2:#9FA6A3; --wf-note:#E58891; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--ground);color:var(--ink);font-family:var(--f-text);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ground)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.2;text-wrap:balance;margin:0}
+.wrap{max-width:1040px;margin-inline:auto}
+.read{max-width:720px}
+.mast{padding-block:40px 20px;display:grid;gap:12px}
+.mast h1{font-size:clamp(30px,5vw,48px)}
+.mast p{margin:0;color:var(--ink-2);max-width:62ch}
+.meta{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--line);margin-bottom:32px}
+.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+.tabs a{display:block;padding:14px 14px 12px;text-decoration:none;color:var(--ink-2);font-weight:500;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s ease,border-color .15s ease}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--ink);border-color:var(--accent)}
+
+section.view{display:grid;gap:48px}
+.block{display:grid;gap:16px}
+.block>h2{font-size:28px}
+.block>p{margin:0;max-width:68ch;color:var(--ink-2)}
+.lede{font-size:18px;color:var(--ink)!important}
+
+/* analysis */
+.shots{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:16px;align-items:start}
+.shots figure,.refs figure,.mat figure{margin:0;display:grid;gap:8px}
+.shots img,.refs img,.mat img{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);display:block}
+figcaption{font-size:13px;color:var(--ink-3)}
+.findings{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--line)}
+.findings li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.sev{font-size:13px;font-weight:600;display:flex;gap:8px;align-items:baseline}
+.sev::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none;transform:translateY(-1px)}
+.sev.hi{color:var(--sev-hi)} .sev.mid{color:var(--sev-mid)} .sev.ok{color:var(--sev-ok)}
+.findings b{font-weight:600}
+.findings p{margin:4px 0 0;color:var(--ink-2)}
+.nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.nums div{background:var(--surface);padding:16px}
+.nums strong{display:block;font-family:var(--f-display);font-size:28px;font-weight:400;font-variant-numeric:tabular-nums}
+.nums span{font-size:13px;color:var(--ink-3)}
+.refs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.refs p{margin:0;font-size:14px;color:var(--ink-2)}
+.mat{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:16px}
+
+/* plan */
+.dir{display:grid;gap:0;border-top:1px solid var(--line)}
+.dir div{display:grid;grid-template-columns:140px minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.dir dt{font-weight:600;margin:0}
+.dir dd{margin:0;color:var(--ink-2)}
+.swatches{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.sw{display:grid;gap:6px;font-size:13px}
+.sw i{display:block;aspect-ratio:1.4;border-radius:8px;border:1px solid var(--line)}
+.sw b{font-weight:600} .sw span{color:var(--ink-3)}
+.type{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.type div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:grid;gap:8px}
+.type .big{font-family:var(--f-display);font-size:34px;line-height:1.15}
+.type .txt{font-size:17px}
+.type small{color:var(--ink-3);font-size:13px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--line);counter-reset:s}
+.steps li{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);counter-increment:s;align-items:baseline}
+.steps li::before{content:counter(s);font-family:var(--f-display);font-size:20px;color:var(--ink-3)}
+.steps p{margin:2px 0 0;color:var(--ink-2);font-size:15px}
+.steps .scr{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.opt{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:grid;gap:8px;align-content:start}
+.opt.pick{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt h3{font-family:var(--f-text);font-size:17px;font-weight:600}
+.opt .tag{font-size:12px;font-weight:600;color:var(--accent)}
+.opt p{margin:0;font-size:14px;color:var(--ink-2)}
+.opt ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.need{columns:2;column-gap:32px;margin:0;padding-left:18px;color:var(--ink-2)}
+.need li{break-inside:avoid;margin-bottom:6px}
+.qs{display:grid;gap:12px;counter-reset:q;padding:0;margin:0;list-style:none}
+.qs li{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px}
+.qs b{display:block;margin-bottom:4px}
+.qs span{color:var(--ink-2);font-size:15px}
+
+/* wireframe */
+.wf-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font:inherit;font-size:14px;font-weight:500;border:0;background:transparent;color:var(--ink-2);padding:6px 14px;border-radius:999px;cursor:pointer;transition:background-color .15s ease,color .15s ease}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.seg button:active{transform:scale(.97)}
+.wf-legend{font-size:13px;color:var(--ink-3);display:flex;gap:16px;flex-wrap:wrap}
+.wf-legend span{display:inline-flex;gap:6px;align-items:center}
+.wf-legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.stage{background:repeating-linear-gradient(45deg,transparent 0 10px,var(--line) 10px 11px);border-radius:14px;padding:16px;overflow-x:auto}
+.frame{container-type:inline-size;margin-inline:auto;width:100%;max-width:1200px;background:var(--wf-bg);color:var(--wf-ink);border-radius:10px;overflow:hidden;border:1px solid var(--line);transition:max-width .35s cubic-bezier(.2,.8,.2,1)}
+.frame.phone{max-width:390px;border-radius:28px}
+.frame *{min-width:0}
+
+.n{display:flex;gap:10px;align-items:baseline;padding:8px 16px;font-size:12px;color:var(--wf-note);border-top:1px dashed var(--wf-note);background:color-mix(in srgb,var(--wf-note) 6%,var(--wf-bg))}
+.n b{font-weight:600;white-space:nowrap;flex:none}
+.ph{background:var(--wf-box);border-radius:6px;display:grid;place-items:center;text-align:center;color:var(--wf-ink-2);font-size:12px;padding:8px;position:relative;overflow:hidden}
+.ph::before,.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(to top right,transparent calc(50% - .5px),var(--wf-box-2) 50%,transparent calc(50% + .5px)),linear-gradient(to top left,transparent calc(50% - .5px),var(--wf-box-2) 50%,transparent calc(50% + .5px));pointer-events:none}
+.ph::after{display:none}
+.ph span{position:relative;z-index:1;background:var(--wf-box);padding:2px 6px;border-radius:4px;max-width:30ch}
+.arch{border-radius:999px 999px 6px 6px}
+.wbtn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 16px;border-radius:8px;font-size:14px;font-weight:600;white-space:nowrap}
+.wbtn.pri{background:var(--wf-ink);color:var(--wf-bg)}
+.wbtn.sec{border:1.5px solid var(--wf-ink);color:var(--wf-ink)}
+.wbtn.sm{min-height:34px;font-size:13px;padding:0 12px}
+.lines{display:grid;gap:6px}
+.lines i{display:block;height:8px;border-radius:4px;background:var(--wf-box)}
+.wh{font-family:var(--f-display);color:var(--wf-ink);line-height:1.15}
+.ws{padding:32px 24px}
+.ws h3{font-size:28px;margin-bottom:16px}
+.muted{color:var(--wf-ink-2)}
+.chip{flex:none;display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--wf-box-2);font-size:12px;white-space:nowrap}
+.chip.on{background:var(--wf-ink);color:var(--wf-bg);border-color:var(--wf-ink)}
+
+/* header */
+.w-head{display:flex;align-items:center;gap:16px;padding:12px 24px;background:var(--wf-bg);border-bottom:1px solid var(--wf-box-2)}
+.logo{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;line-height:1.2}
+.logo .ph{width:40px;height:40px;border-radius:50%;padding:0}
+.w-nav{display:flex;gap:18px;font-size:13px;margin-left:auto}
+.lang{font-size:12px;border:1px solid var(--wf-box-2);border-radius:6px;padding:4px 8px;white-space:nowrap}
+.burger{display:none;width:40px;height:40px;border-radius:8px;border:1px solid var(--wf-box-2);place-items:center;font-size:18px;margin-left:auto}
+
+/* hero */
+.w-hero{position:relative;min-height:560px;display:grid;align-items:end}
+.w-hero>.ph{position:absolute;inset:0;border-radius:0}
+.w-hero>.ph span{position:absolute;top:16px;right:16px}
+.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;align-items:end;padding:24px}
+.hero-txt{background:color-mix(in srgb,var(--wf-bg) 88%,transparent);border-radius:10px;padding:24px;display:grid;gap:12px}
+.hero-txt .eyebrow{font-size:12px;font-weight:600;color:var(--wf-ink-2)}
+.hero-txt h2{font-size:44px}
+.hero-txt p{margin:0;font-size:15px}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap}
+.next{background:var(--wf-bg);border-radius:10px;padding:16px;display:grid;gap:10px;border:1px solid var(--wf-box-2)}
+.next .d{display:flex;gap:12px;align-items:center}
+.next .day{font-family:var(--f-display);font-size:40px;line-height:1}
+.next small{font-size:12px;color:var(--wf-ink-2);display:block}
+.ochre-band{height:8px;background:var(--ochre)}
+
+/* afisha */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.filters.m{margin-bottom:16px}
+.ev{display:grid;grid-template-columns:72px 88px minmax(0,1fr) 120px auto;gap:16px;align-items:center;padding:14px 0;border-top:1px solid var(--wf-box-2)}
+.ev:last-of-type{border-bottom:1px solid var(--wf-box-2)}
+.ev .date{font-family:var(--f-display);font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.ev .date small{display:block;font-family:var(--f-text);font-size:11px;color:var(--wf-ink-2);margin-top:4px}
+.ev .thumb{aspect-ratio:1;padding:0}
+.ev .t b{display:block;font-size:15px}
+.ev .t span{font-size:12px;color:var(--wf-ink-2)}
+.ev .p{font-size:12px;color:var(--wf-ink-2);font-variant-numeric:tabular-nums}
+.more{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:13px;gap:12px;flex-wrap:wrap}
+
+/* collectives */
+.cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.col{display:grid;gap:6px;font-size:12px;grid-column:span 2;align-content:start}
+.col .ph{aspect-ratio:4/3}
+.col.big{grid-column:span 3}
+.col.big .ph{aspect-ratio:16/9}
+.col b{font-size:14px}
+.col span{color:var(--wf-ink-2)}
+
+/* hall */
+.hall{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.hall .pin{position:sticky;top:0}
+.hall .pin .ph{aspect-ratio:3/4}
+.ch{display:grid;gap:8px;padding:20px 0;border-bottom:1px solid var(--wf-box-2)}
+.ch .k{font-size:12px;color:var(--wf-ink-2);font-weight:600}
+.ch .v{font-family:var(--f-display);font-size:26px;line-height:1.1}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.facts div{background:var(--wf-box);border-radius:6px;padding:10px;font-size:11px;color:var(--wf-ink-2)}
+.facts b{display:block;font-family:var(--f-display);font-size:22px;font-weight:400;color:var(--wf-ink);font-variant-numeric:tabular-nums}
+
+/* history */
+.hist{background:var(--wf-ink);color:var(--wf-bg)}
+.hist .muted{color:color-mix(in srgb,var(--wf-bg) 70%,transparent)}
+.hist .n{background:transparent;color:var(--ochre);border-color:var(--ochre)!important}
+.hist-top{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:24px;align-items:end}
+.hist .big85{font-family:var(--f-display);font-size:150px;line-height:.85;color:var(--gold)}
+.hist .por .ph{aspect-ratio:3/4;background:color-mix(in srgb,var(--wf-bg) 18%,var(--wf-ink))}
+.hist .por .ph span{background:transparent;color:var(--wf-bg)}
+.tl{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:28px;border-top:1px solid color-mix(in srgb,var(--wf-bg) 30%,transparent);padding-top:16px}
+.tl div{font-size:12px}
+.tl b{display:block;font-family:var(--f-display);font-weight:400;font-size:24px;color:var(--gold);font-variant-numeric:tabular-nums}
+
+/* projects */
+.proj{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.proj div{border:1px solid var(--wf-box-2);border-radius:8px;padding:14px;display:grid;gap:6px;font-size:12px}
+.proj b{font-family:var(--f-display);font-weight:400;font-size:20px}
+.news{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.news div{display:grid;gap:6px;font-size:12px}
+.news .ph{aspect-ratio:16/10}
+
+/* visit */
+.visit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.visit>div{display:grid;gap:8px;align-content:start;font-size:13px}
+.visit h4{margin:0;font-size:15px}
+.visit .ph{aspect-ratio:4/3}
+
+/* footer */
+.w-foot{padding:24px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;font-size:12px;border-top:1px solid var(--wf-box-2)}
+.w-foot b{display:block;margin-bottom:6px;font-size:13px}
+.w-foot span{display:block;color:var(--wf-ink-2)}
+.actionbar{display:none}
+
+/* phone layout of the wireframe */
+@container (max-width:640px){
+  .w-head{padding:10px 16px}
+  .w-nav,.w-head .lang,.w-head .wbtn{display:none}
+  .burger{display:grid}
+  .w-hero{min-height:auto;align-items:stretch}
+  .w-hero>.ph{position:relative;height:300px}
+  .w-hero>.ph span{top:auto;bottom:12px;right:12px}
+  .hero-in{grid-template-columns:1fr;padding:0 16px 20px;margin-top:-56px}
+  .hero-txt{padding:18px}
+  .hero-txt h2{font-size:30px}
+  .hero-ctas .wbtn{flex:1}
+  .ws{padding:28px 16px}
+  .ws h3{font-size:24px}
+  .filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+  .ev{grid-template-columns:56px minmax(0,1fr) auto;gap:12px}
+  .ev .thumb,.ev .p{display:none}
+  .ev .date{font-size:24px}
+  .cols{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .col{grid-column:span 1}
+  .col.big{grid-column:span 2}
+  .hall{grid-template-columns:1fr}
+  .hall .pin{position:relative}
+  .hall .pin .ph{aspect-ratio:4/3}
+  .hist-top{grid-template-columns:1fr}
+  .hist .big85{font-size:96px}
+  .hist .por{display:none}
+  .tl{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .proj{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .news{grid-template-columns:1fr}
+  .news div:nth-child(n+2){display:none}
+  .visit{grid-template-columns:1fr}
+  .w-foot{grid-template-columns:1fr 1fr;padding:20px 16px 88px}
+  .actionbar{display:flex;gap:10px;position:sticky;bottom:0;z-index:3;padding:10px 16px 14px;background:var(--wf-bg);border-top:1px solid var(--wf-box-2)}
+  .actionbar .wbtn{flex:1}
+  .n{padding:8px 16px}
+}
+
+/* reading-width layouts for the doc itself on phones */
+@media (max-width:720px){
+  .shots{grid-template-columns:1fr 1fr}
+  .shots figure:first-child{grid-column:1/-1}
+  .findings li,.dir div{grid-template-columns:1fr;gap:4px}
+  .nums{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .refs,.opts,.type{grid-template-columns:1fr}
+  .mat{grid-template-columns:1fr 1fr}
+  .mat figure:first-child{grid-column:1/-1}
+  .swatches{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .need{columns:1}
+  .steps li{grid-template-columns:32px minmax(0,1fr)}
+  .steps .scr{grid-column:2}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap mast">
+  <div class="meta">Павлодар · 25 ноября 2026 · черновик для обсуждения</div>
+  <h1>Новый сайт филармонии имени Исы Байзакова</h1>
+  <p>Анализ текущего сайта isa-philharmonic.kz, план лендинга и каркас главной страницы. Каркас серый намеренно: сначала договариваемся о структуре и порядке, потом рисуем дизайн.</p>
+</div>
+
+<nav class="tabs" aria-label="Разделы">
+  <div class="wrap">
+    <a href="#analysis" data-v="analysis">1. Анализ</a>
+    <a href="#plan" data-v="plan">2. План</a>
+    <a href="#wireframe" data-v="wireframe">3. Каркас</a>
+  </div>
+</nav>
+
+<!-- ============ ANALYSIS ============ -->
+<section class="view wrap" id="v-analysis" aria-label="Анализ">
+  <div class="block read">
+    <h2>Что видит зритель сейчас</h2>
+    <p class="lede">Сайт открывается, но не отвечает на два главных вопроса: что идёт в ближайшие дни и как купить билет. Афиша на главной пустая, вместо неё около 900 пикселей белого поля.</p>
+  </div>
+
+  <div class="shots">
+    <figure><img src="img/site-desktop.jpg" alt="Первый экран текущего сайта на ноутбуке: две строки меню на коричневом фоне, длинное официальное название и фото фасада зимой с цифрами поверх" width="1200" height="750"><figcaption>Первый экран, 1440 px</figcaption></figure>
+    <figure><img src="img/site-mobile.jpg" alt="Первый экран текущего сайта на телефоне: юридическое название занимает почти весь экран" width="390" height="844"><figcaption>Телефон, 390 px</figcaption></figure>
+  </div>
+
+  <div class="nums" role="list">
+    <div role="listitem"><strong>6,3 с</strong><span>до полной загрузки</span></div>
+    <div role="listitem"><strong>4,4 МБ</strong><span>вес главной, 67 запросов</span></div>
+    <div role="listitem"><strong>9 из 22</strong><span>картинок без описания (alt)</span></div>
+    <div role="listitem"><strong>~40</strong><span>ссылок в шапке</span></div>
+  </div>
+
+  <div class="block">
+    <h2>Проблемы по важности</h2>
+    <ul class="findings">
+      <li><span class="sev hi">Критично</span><div><b>Афиша не видна</b><p>Блок «Афиша» на главной пустой. Раздел «Репертуар» состоит из картинок-афиш без текста: дату и название нельзя найти поиском, прочитать скринридером или скопировать.</p></div></li>
+      <li><span class="sev hi">Критично</span><div><b>Путь к билету обрывается</b><p>«Купить билеты» ведёт на промежуточную страницу loc_tiketon.php, она не загрузилась за 45 секунд. На самих афишах написано «Билеты: Freedom» и «в кассе филармонии», на сайте этого нет.</p></div></li>
+      <li><span class="sev hi">Критично</span><div><b>Телефон: до контента нужно листать</b><p>На 390 px первый экран занимает название «Коммунальное государственное казённое предприятие…». Цифры поверх фото наезжают друг на друга.</p></div></li>
+      <li><span class="sev mid">Важно</span><div><b>Шапка перегружена</b><p>Две строки меню, восемь выпадающих списков, около 40 пунктов, всё заглавными. Рядом e-mail, «Экран дикторы» и переключатель языка. Комплаенс и «Госсфера» стоят в одном ряду с афишей.</p></div></li>
+      <li><span class="sev mid">Важно</span><div><b>Первый экран без смысла</b><p>Фасад с припаркованной машиной, коричневые цифры на снегу плохо читаются. Число концертов в год меняется между слайдами: 184, 196, 208.</p></div></li>
+      <li><span class="sev mid">Важно</span><div><b>Техника</b><p>У страницы не указан язык (lang), нет описания для поиска и соцсетей. Шрифты Roboto и Pacifico, иконки FontAwesome. Фото называются «WhatsApp Image 2026-…».</p></div></li>
+      <li><span class="sev ok">Сильное</span><div><b>Материал отличный</b><p>Здание 1963 года, памятник архитектуры. Зал на 428 мест, люстра, единственная такая в Павлодаре, фойе в стиле рококо. Восемь коллективов с хорошими постановочными фото, девять худруков с именами, история с 1941 года с архивными документами, юбилейный 85-й сезон.</p></div></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h2>Что уже есть у филармонии</h2>
+    <div class="mat">
+      <figure><img src="img/foyer.jpg" alt="Центральное фойе: белые арки с лепниной и позолотой, деревянные двери, бордовые стулья" width="1000" height="562"><figcaption>Фойе, 181,5 м². Арки, лепнина и позолота станут основой визуального языка</figcaption></figure>
+      <figure><img src="img/nur.jpg" alt="Ансамбль танца «Нұр» в бирюзово-коричневых костюмах с орнаментом" width="900" height="648"><figcaption>Ансамбль «Нұр». Фото коллективов студийного качества</figcaption></figure>
+      <figure><img src="img/poster.jpg" alt="Афиша концерта «Ғасырлармен үндескен қобыз өнері» 20 ноября 2026" width="700" height="666"><figcaption>Афиши делают в Canva, на сайте нужен их текст, а не только картинка</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Что берём у других залов</h2>
+    <div class="refs">
+      <figure><img src="img/ref-berliner.jpg" alt="Главный экран сайта Берлинской филармонии: большое фото оркестра, название концерта и кнопка с датой" width="900" height="562"><figcaption>Берлинская филармония</figcaption><p>Первый экран посвящён ближайшему концерту, кнопка билета показывает дату. Ниже календарь с фильтрами по жанрам.</p></figure>
+      <figure><img src="img/ref-astana.jpg" alt="Сайт Astana Opera: ближайшие события в виде ряда дат" width="900" height="562"><figcaption>Astana Opera</figcaption><p>Ближайшие даты стоят сразу под шапкой. Казахский язык по умолчанию, русский переключается в один клик.</p></figure>
+    </div>
+    <p>У Эльбфилармонии в меню три пункта, по вопросам зрителя: что идёт, как прийти, какие залы. Так же делаем и мы.</p>
+  </div>
+</section>
+
+<!-- ============ PLAN ============ -->
+<section class="view wrap" id="v-plan" aria-label="План" hidden>
+  <div class="block read">
+    <h2>Задача страницы</h2>
+    <p class="lede">Павлодарец открывает сайт с телефона и за один экран видит ближайший концерт. Через два касания он уже на странице оплаты.</p>
+    <p>Вторая задача: показать, что у города есть зал-памятник и коллектив с 85-летней историей. Это повод прийти, даже если человек не знает программы.</p>
+  </div>
+
+  <div class="block">
+    <h2>Направление</h2>
+    <dl class="dir">
+      <div><dt>Что это</dt><dd>Концертный зал на 428 мест в центре Павлодара: восемь коллективов, около 200 концертов в год, от кобыза до джаза.</dd></div>
+      <div><dt>Характер</dt><dd>Торжественный, тёплый, точный. Как вечер в этом зале, а не как госпортал.</dd></div>
+      <div><dt>Мир</dt><dd>Само здание: три арки фасада, охра между белыми колоннами, лепнина с позолотой, хрусталь люстры, бордовые кресла, мятные панели фойе. И бирюзовый орнамент на костюмах «Нұр».</dd></div>
+      <div><dt>Яркие места</dt><dd>Главный экран с живым фото концерта. Глава «Зал», где фото меняются по мере чтения: фасад, фойе, люстра, зал. Всё остальное спокойное.</dd></div>
+      <div><dt>Подпись</dt><dd>Арочная рамка фото, как три арки фасада. Используется только для фото, только этот приём.</dd></div>
+    </dl>
+  </div>
+
+  <div class="block">
+    <h2>Цвет и шрифт</h2>
+    <div class="swatches">
+      <div class="sw"><i style="background:#F3F2EE"></i><b>Лепнина</b><span>фон</span></div>
+      <div class="sw"><i style="background:#16201E"></i><b>Сцена</b><span>текст, тёмные блоки</span></div>
+      <div class="sw"><i style="background:#8A1C2B"></i><b>Кресла</b><span>кнопка «Купить»</span></div>
+      <div class="sw"><i style="background:#E2B04A"></i><b>Фасад</b><span>одна полоса-акцент</span></div>
+      <div class="sw"><i style="background:#DCE5D3"></i><b>Фойе</b><span>тихие плашки</span></div>
+      <div class="sw"><i style="background:#B08A3A"></i><b>Позолота</b><span>цифры на тёмном</span></div>
+    </div>
+    <div class="type">
+      <div><small>Заголовки · Prata</small><span class="big">Қобыз өнері · Симфония</span><small>Дидона с казахскими буквами: Ә Ғ Қ Ң Ө Ұ Ү Һ І</small></div>
+      <div><small>Текст и интерфейс · Golos Text</small><span class="txt">20 декабря, 19:00 · Партер от 3 000 ₸ · Купить билет</span><small>Сделан для кириллицы, хорошо читается на телефоне</small></div>
+    </div>
+    <p>Фиолетовую палитру и шаблонные шрифты, которые предложила база ui-ux-pro-max, не берём. Цвета взяты из здания и костюмов, а не из трендов.</p>
+  </div>
+
+  <div class="block">
+    <h2>Структура лендинга</h2>
+    <ol class="steps">
+      <li><div><b>Шапка</b><p>Логотип «85», четыре пункта: Афиша, Коллективы, Зал, Посетителям. ҚАЗ / РУС. Кнопка «Купить билет».</p></div><span class="scr">липкая</span></li>
+      <li><div><b>Главный экран</b><p>Фото концерта во весь экран, имя филармонии, «428 мест · 85-й сезон». Карточка ближайшего концерта с кнопкой.</p></div><span class="scr">1 экран</span></li>
+      <li><div><b>Афиша</b><p>Список, не карусель. Месяцы и жанры: симфоническая, народная, джаз, хор, танец, детям. В каждой строке дата, название, коллектив, цена «от» и кнопка «Билеты».</p></div><span class="scr">1–2 экрана</span></li>
+      <li><div><b>Коллективы</b><p>Восемь коллективов: два крупно (симфонический и оркестр им. Омарова), шесть меньше. Фото и худрук.</p></div><span class="scr">1 экран</span></li>
+      <li><div><b>Зал</b><p>Яркое место страницы. Фото в арочной рамке меняются по мере прокрутки: 1963 год, фойе, люстра, 428 мест, сцена 8 × 8 м.</p></div><span class="scr">2 экрана</span></li>
+      <li><div><b>85 лет</b><p>Тёмный блок: крупное «85», портрет Исы Байзакова, шесть дат с 1941 по 2026 год.</p></div><span class="scr">1 экран</span></li>
+      <li><div><b>Проекты и новости</b><p>Самға, Тағылым, Ән аманат, Алтын бесік. Три последние новости.</p></div><span class="scr">1 экран</span></li>
+      <li><div><b>Посетителям</b><p>Как купить: касса или онлайн. Как добраться: проспект Назарбаева, 1. Правила, дети, доступность.</p></div><span class="scr">1 экран</span></li>
+      <li><div><b>Подвал</b><p>Контакты, соцсети. Комплаенс, Госсфера и вакансии переезжают сюда из шапки.</p></div><span class="scr">—</span></li>
+    </ol>
+    <p>На телефоне внизу всегда видна кнопка «Купить билет». Анимации: одно появление главного экрана при загрузке и смена фото в главе «Зал». Никаких каруселей, плавающих блоков и мигания.</p>
+  </div>
+
+  <div class="block">
+    <h2>Как собрать: три варианта</h2>
+    <div class="opts">
+      <div class="opt"><h3>Статичный HTML</h3><p>Один файл, CSS и немного JS.</p><ul><li>Быстро и дёшево</li><li>Афишу правит только разработчик</li><li>Казахская версия = копия файла</li></ul></div>
+      <div class="opt pick"><span class="tag">Рекомендую</span><h3>Astro и файл афиши</h3><p>Статический сайт, афиша лежит в одной таблице (JSON или Google-таблица).</p><ul><li>Загрузка меньше секунды</li><li>Сотрудник меняет строку в таблице, сайт пересобирается</li><li>ҚАЗ и РУС из одного шаблона</li><li>Позже можно подключить CMS</li></ul></div>
+      <div class="opt"><h3>Next.js и CMS</h3><p>Полноценная админка для афиши, новостей, коллективов.</p><ul><li>Удобно редакции</li><li>Дольше и дороже, нужен сервер</li><li>Избыточно для лендинга</li></ul></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Что нужно от филармонии</h2>
+    <ul class="need">
+      <li>Фото концертов, зала и люстры в исходном качестве, не из WhatsApp</li>
+      <li>Афиша на 2–3 месяца текстом: дата, время, название, коллектив, цена, ссылка Freedom</li>
+      <li>Часы работы кассы и телефон кассы</li>
+      <li>Тексты на казахском или согласие на перевод с проверкой</li>
+      <li>Логотип «85» в векторе (SVG или PDF)</li>
+      <li>Портрет Исы Байзакова и права на его использование</li>
+      <li>Ссылки на соцсети и YouTube</li>
+      <li>Кто будет обновлять афишу и как часто</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h2>Этапы</h2>
+    <ol class="steps">
+      <li><div><b>Каркас и структура</b><p>Эта страница. Согласуем порядок блоков и что в них.</p></div><span class="scr">сейчас</span></li>
+      <li><div><b>Дизайн двух экранов</b><p>Главный экран и афиша, на ноутбуке и телефоне, в цвете и с реальными фото.</p></div><span class="scr">следующий шаг</span></li>
+      <li><div><b>Вёрстка всей страницы</b><p>ҚАЗ и РУС, афиша из таблицы.</p></div><span class="scr"></span></li>
+      <li><div><b>Проверка</b><p>Taste-gate в браузере на 1440, 1024, 768, 390 и 320 px, контраст, клавиатура, скорость.</p></div><span class="scr"></span></li>
+      <li><div><b>Публикация</b><p>Vercel или хостинг филармонии, перенос домена.</p></div><span class="scr"></span></li>
+    </ol>
+  </div>
+
+  <div class="block">
+    <h2>Открытые вопросы</h2>
+    <ol class="qs">
+      <li><b>Это замена isa-philharmonic.kz или отдельная страница, например к юбилею?</b><span>От ответа зависит, переносим ли разделы «О филармонии», «Лица», «Комплаенс» и новости или ведём на старый сайт.</span></li>
+      <li><b>Какой язык открывается первым: казахский или русский?</b><span>Сейчас первый русский. У Astana Opera первый казахский. Нужен ли английский?</span></li>
+      <li><b>Билеты: только ссылка на Freedom Афишу или виджет на странице?</b><span>Ссылку сделать проще. Виджет держит человека на сайте, но нужен договор с Freedom.</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ WIREFRAME ============ -->
+<section class="view wrap" id="v-wireframe" aria-label="Каркас" hidden>
+  <div class="block read">
+    <h2>Каркас главной</h2>
+    <p>Серые блоки — фото, красные строки — заметки к блоку. Переключите на телефон, чтобы увидеть мобильную версию. Даты и цены в афише приведены для примера.</p>
+  </div>
+  <div class="wf-bar">
+    <div class="seg" role="group" aria-label="Ширина экрана">
+      <button type="button" id="b-desk" aria-pressed="true">Ноутбук</button>
+      <button type="button" id="b-phone" aria-pressed="false">Телефон</button>
+    </div>
+    <div class="wf-legend"><span><i style="background:var(--wf-box)"></i>фото</span><span><i style="background:var(--wf-note)"></i>заметка</span><span><i style="background:var(--ochre)"></i>единственный цветной акцент</span></div>
+  </div>
+
+  <div class="stage">
+  <div class="frame" id="frame">
+
+    <header class="w-head">
+      <div class="logo"><div class="ph"><span>85</span></div><span>Филармония<br>им. Исы Байзакова</span></div>
+      <nav class="w-nav" aria-label="Меню каркаса"><span>Афиша</span><span>Коллективы</span><span>Зал</span><span>Посетителям</span></nav>
+      <span class="lang">ҚАЗ · РУС</span>
+      <span class="wbtn pri sm">Купить билет</span>
+      <span class="burger" aria-hidden="true">≡</span>
+    </header>
+    <div class="n"><b>Шапка</b><span>Четыре пункта вместо сорока. Липкая. На телефоне меню на весь экран.</span></div>
+
+    <div class="w-hero">
+      <div class="ph"><span>ФОТО: оркестр на сцене под люстрой, вечерний свет</span></div>
+      <div class="hero-in">
+        <div class="hero-txt">
+          <span class="eyebrow">85-й сезон · Павлодар</span>
+          <h2 class="wh">Филармония имени Исы Байзакова</h2>
+          <p>Концертный зал на 428 мест на проспекте Назарбаева, 1. Симфоническая и народная музыка, джаз, хор и танец.</p>
+          <div class="hero-ctas"><span class="wbtn pri">Купить билет</span><span class="wbtn sec">Вся афиша</span></div>
+        </div>
+        <div class="next">
+          <small>Ближайший концерт</small>
+          <div class="d"><span class="day">05</span><div><b>Декабря, 18:00</b><small>Оркестр им. Р. Омарова</small></div></div>
+          <b>Юбилейный концерт к 85-летию филармонии</b>
+          <span class="wbtn pri sm">Билеты от 2 500 ₸</span>
+        </div>
+      </div>
+    </div>
+    <div class="ochre-band" aria-hidden="true"></div>
+    <div class="n"><b>Главный экран</b><span>Карточка ближайшего концерта собирается из афиши автоматически. Охристая полоса — цвет фасада.</span></div>
+
+    <div class="ws">
+      <h3 class="wh">Афиша</h3>
+      <div class="filters"><span class="chip on">Декабрь</span><span class="chip">Январь</span><span class="chip">Февраль</span></div>
+      <div class="filters m"><span class="chip on">Все</span><span class="chip">Симфоническая</span><span class="chip">Народная</span><span class="chip">Джаз</span><span class="chip">Хор</span><span class="chip">Танец</span><span class="chip">Детям</span></div>
+      <div class="ev"><div class="date">05<small>пт, 18:00</small></div><div class="ph thumb"><span>фото</span></div><div class="t"><b>Юбилейный концерт к 85-летию</b><span>Все коллективы филармонии</span></div><div class="p">от 2 500 ₸</div><span class="wbtn pri sm">Билеты</span></div>
+      <div class="ev"><div class="date">12<small>пт, 19:00</small></div><div class="ph thumb"><span>фото</span></div><div class="t"><b>Вечер симфонической музыки</b><span>Симфонический оркестр · дир. Диас Усенов</span></div><div class="p">от 2 000 ₸</div><span class="wbtn pri sm">Билеты</span></div>
+      <div class="ev"><div class="date">14<small>вс, 12:00</small></div><div class="ph thumb"><span>фото</span></div><div class="t"><b>Сказка с оркестром</b><span>Для детей 6+ · ансамбль «Лад»</span></div><div class="p">от 1 500 ₸</div><span class="wbtn pri sm">Билеты</span></div>
+      <div class="ev"><div class="date">19<small>сб, 19:00</small></div><div class="ph thumb"><span>фото</span></div><div class="t"><b>Джаз под Новый год</b><span>Джазовый оркестр · Виктор Шейкин</span></div><div class="p">от 3 000 ₸</div><span class="wbtn pri sm">Билеты</span></div>
+      <div class="more"><span class="muted">Касса: пр. Назарбаева, 1 · онлайн через Freedom Афишу</span><span class="wbtn sec sm">Вся афиша декабря</span></div>
+    </div>
+    <div class="n"><b>Афиша</b><span>Главный блок страницы. Текст, а не картинки: ищется в Google, читается скринридером. Данные из одной таблицы.</span></div>
+
+    <div class="ws">
+      <h3 class="wh">Коллективы</h3>
+      <div class="cols">
+        <div class="col big"><div class="ph"><span>ФОТО: симфонический оркестр</span></div><b>Симфонический оркестр</b><span>Дирижёр Диас Усенов</span></div>
+        <div class="col big"><div class="ph"><span>ФОТО: оркестр в национальных костюмах</span></div><b>Оркестр казахских народных инструментов им. Р. Омарова</b><span>Талгат Каримов, заслуженный деятель РК</span></div>
+        <div class="col"><div class="ph"><span>фото</span></div><b>Джазовый оркестр</b><span>Виктор Шейкин</span></div>
+        <div class="col"><div class="ph"><span>фото</span></div><b>Камерный хор</b><span>Мадина Нургожинова</span></div>
+        <div class="col"><div class="ph"><span>фото</span></div><b>Ансамбль танца «Нұр»</b><span>Айгуль Даирбаева</span></div>
+        <div class="col"><div class="ph"><span>фото</span></div><b>Ансамбль танца «Шернияз»</b><span>Нурлан Беков</span></div>
+        <div class="col"><div class="ph"><span>фото</span></div><b>Ансамбль «Лад»</b><span>Оксана Петрушкина</span></div>
+        <div class="col"><div class="ph"><span>фото</span></div><b>Вокальный ансамбль «Ретро»</b><span>Айжан Жетписбаева</span></div>
+      </div>
+    </div>
+    <div class="n"><b>Коллективы</b><span>Клик ведёт на афишу коллектива. Ряд разной ширины, а не восемь одинаковых карточек.</span></div>
+
+    <div class="ws">
+      <h3 class="wh">Зал</h3>
+      <div class="hall">
+        <div class="pin"><div class="ph arch"><span>ФОТО в арочной рамке, меняется: фасад → фойе → люстра → зал</span></div></div>
+        <div>
+          <div class="ch"><span class="k">1963</span><span class="v">Здание-памятник</span><span class="muted">Открыто 12 ноября 1963 года. Симметричный фасад, три арки, колонны-пилястры.</span></div>
+          <div class="ch"><span class="k">Фойе</span><span class="v">Рококо и лепнина</span><span class="muted">181,5 м², глиняная лепка и позолота сохранились с открытия.</span></div>
+          <div class="ch"><span class="k">Люстра</span><span class="v">Единственная такая в Павлодаре</span><span class="muted">Многоярусная, дворцового типа, хрусталь и позолота.</span></div>
+          <div class="ch"><span class="k">Зрительный зал</span><span class="v">428 мест</span>
+            <div class="facts"><div><b>234</b>партер</div><div><b>194</b>амфитеатр</div><div><b>8 × 8 м</b>сцена</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="n"><b>Зал · яркое место</b><span>Фото слева закреплено и меняется по мере чтения глав справа. Под «уменьшить движение» просто стоят четыре фото подряд.</span></div>
+
+    <div class="ws hist">
+      <div class="hist-top">
+        <div><div class="big85">85</div><h3 class="wh" style="color:inherit;margin-top:12px">сезонов с 1941 года</h3><p class="muted" style="margin:0;font-size:13px">Иса Байзаков (1900–1946): акын, поэт, композитор. Его имя филармония носит с 1971 года.</p></div>
+        <div class="por"><div class="ph arch"><span>ПОРТРЕТ Исы Байзакова</span></div></div>
+      </div>
+      <div class="tl">
+        <div><b>1941</b>Филиал Казгосфилармонии в Павлодаре</div>
+        <div><b>1946</b>Концертно-эстрадное бюро</div>
+        <div><b>1950</b>Больше 1000 концертов за год, 949 в сёлах</div>
+        <div><b>1965</b>Самостоятельная областная филармония</div>
+        <div><b>1971</b>Имя Исы Байзакова</div>
+        <div><b>2026</b>Юбилейный 85-й сезон</div>
+      </div>
+      <div class="n" style="margin:24px -24px -32px;border-color:var(--wf-note)"><b>85 лет</b><span>Единственный тёмный блок. Цифры цветом позолоты. Ссылка «Вся история» ведёт на подробную страницу.</span></div>
+    </div>
+
+    <div class="ws">
+      <h3 class="wh">Проекты и новости</h3>
+      <div class="proj">
+        <div><b>Самға</b><span class="muted">одна строка о проекте</span></div>
+        <div><b>Тағылым</b><span class="muted">одна строка о проекте</span></div>
+        <div><b>Ән аманат</b><span class="muted">одна строка о проекте</span></div>
+        <div><b>Алтын бесік</b><span class="muted">одна строка о проекте</span></div>
+      </div>
+      <div class="news">
+        <div><div class="ph"><span>фото</span></div><b>85-й сезон откроется концертом симфонического оркестра</b><span class="muted">дата</span></div>
+        <div><div class="ph"><span>фото</span></div><b>От кобыза до фагота</b><span class="muted">дата</span></div>
+        <div><div class="ph"><span>фото</span></div><b>«Нұр» выступит на Всемирных играх кочевников</b><span class="muted">дата</span></div>
+      </div>
+    </div>
+    <div class="n"><b>Проекты</b><span>Компактно, на один экран. На телефоне одна новость и ссылка «Все новости».</span></div>
+
+    <div class="ws">
+      <h3 class="wh">Посетителям</h3>
+      <div class="visit">
+        <div><h4>Как купить билет</h4><span>Касса филармонии: часы уточнить</span><span>Онлайн: Freedom Афиша</span><div class="lines"><i style="width:80%"></i><i style="width:60%"></i></div><span class="wbtn pri sm" style="justify-self:start">Купить онлайн</span></div>
+        <div><h4>Как добраться</h4><span>Проспект Назарбаева, 1, центр Павлодара</span><div class="ph"><span>карта-картинка, ссылка на 2ГИС</span></div></div>
+        <div><h4>Правила зала</h4><div class="lines"><i style="width:90%"></i><i style="width:75%"></i><i style="width:85%"></i><i style="width:55%"></i></div><span class="muted">Дети, опоздания, гардероб, доступная среда</span></div>
+      </div>
+    </div>
+    <div class="n"><b>Посетителям</b><span>Ответы на вопросы, которые сейчас задают по телефону.</span></div>
+
+    <footer class="w-foot">
+      <div><b>Филармония</b><span>пр. Назарбаева, 1, Павлодар</span><span>+7 (7182) 22-80-87</span></div>
+      <div><b>Соцсети</b><span>Instagram · isa_philharmonic</span><span>YouTube · Telegram</span></div>
+      <div><b>О филармонии</b><span>История · Руководство</span><span>Вакансии · СМИ о нас</span></div>
+      <div><b>Документы</b><span>Комплаенс · Госсфера</span><span>Противодействие коррупции</span></div>
+    </footer>
+    <div class="actionbar"><span class="wbtn pri">Купить билет</span><span class="wbtn sec">Афиша</span></div>
+
+  </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var views=["analysis","plan","wireframe"];
+  function show(){
+    var h=(location.hash||"").slice(1); if(views.indexOf(h)<0) h="analysis";
+    views.forEach(function(v){
+      document.getElementById("v-"+v).hidden=(v!==h);
+      var a=document.querySelector('.tabs a[data-v="'+v+'"]');
+      if(v===h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");
+    });
+  }
+  window.addEventListener("hashchange",function(){show();window.scrollTo(0,0)});
+  show();
+  var f=document.getElementById("frame"),bd=document.getElementById("b-desk"),bp=document.getElementById("b-phone");
+  function set(p){f.classList.toggle("phone",p);bd.setAttribute("aria-pressed",String(!p));bp.setAttribute("aria-pressed",String(p));
+    try{localStorage.setItem("wf-mode",p?"phone":"desk")}catch(e){}}
+  bd.addEventListener("click",function(){set(false)});
+  bp.addEventListener("click",function(){set(true)});
+  try{if(localStorage.getItem("wf-mode")==="phone")set(true)}catch(e){}
+})();
+</script>
+
+</body>
+</html>
