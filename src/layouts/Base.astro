@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import heroImg from '../assets/img/hero.webp';
+import { LANGS, altPath, t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path: string;
+}
+const { lang, title, description, path } = Astro.props;
+const site = Astro.site!;
+const og = await getImage({ src: heroImg, width: 1200, format: 'jpeg' });
+const ogUrl = new URL(og.src, site).href;
+const canonical = new URL(path, site).href;
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={canonical}>
+{LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(altPath(path, l), site).href}>)}
+<link rel="alternate" hreflang="x-default" href={new URL(altPath(path, 'kk'), site).href}>
+<meta name="theme-color" content="#0E1514">
+<meta property="og:type" content="website">
+<meta property="og:locale" content={lang === 'kk' ? 'kk_KZ' : 'ru_RU'}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:image" content={ogUrl}>
+<meta property="og:url" content={canonical}>
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500&display=swap">
+</head>
+<body>
+<a class="skip" href="#main">{t(lang, 'skip')}</a>
+<slot />
+</body>
+</html>

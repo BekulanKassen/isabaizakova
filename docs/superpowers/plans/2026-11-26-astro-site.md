@@ -81,7 +81,7 @@ docs/afisha-howto.md         инструкция для сотрудника
 
 ---
 
-### Задача 1. Каркас Astro, два языка, базовый макет
+### Task 1: Каркас Astro, два языка, базовый макет
 
 **Файлы:** создать `package.json`, `astro.config.mjs`, `tsconfig.json`, `vitest.config.ts`, `src/i18n/ui.ts`, `src/layouts/Base.astro`, `src/styles/global.css`, `src/pages/index.astro`, `src/pages/[lang]/index.astro` (пока только `<h1>`), `tests/unit/i18n.test.ts`. Изменить `.gitignore` (добавить `dist/`, `.astro/`).
 
@@ -108,7 +108,7 @@ docs/afisha-howto.md         инструкция для сотрудника
 - [ ] **Шаг 6.** `npm run build`: в `dist/kk/index.html` есть `lang="kk"`, в `dist/ru/index.html` есть `lang="ru"`.
 - [ ] **Шаг 7.** Коммит `feat: каркас Astro, два языка`.
 
-### Задача 2. Схемы данных и перенос афиши
+### Task 2: Схемы данных и перенос афиши
 
 **Файлы:** создать `src/content.config.ts`, `src/data/afisha.json`, `src/data/ensembles.json`, `tests/unit/schema.test.ts`. Перенести `site/img/*.webp` в `src/assets/img/`.
 
@@ -138,7 +138,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 5.** `npx vitest run` и `npm run build`: PASS. Испортить одну дату в `afisha.json`, `npm run build` падает с указанием поля, вернуть.
 - [ ] **Шаг 6.** Коммит `feat: схемы и данные афиши и коллективов`.
 
-### Задача 3. Логика афиши
+### Task 3: Логика афиши
 
 **Файлы:** создать `src/lib/dates.ts`, `src/lib/afisha.ts`, `tests/unit/afisha.test.ts`, `tests/unit/dates.test.ts`.
 
@@ -162,7 +162,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 4.** `npx vitest run`: PASS.
 - [ ] **Шаг 5.** Коммит `feat: логика афиши`.
 
-### Задача 4. Главная: шапка, главный экран, афиша
+### Task 4: Главная: шапка, главный экран, афиша
 
 **Файлы:** создать `Header.astro`, `Menu.astro`, `ActionBar.astro`, `Hero.astro`, `NextConcert.astro`, `Afisha.astro`, `EventRow.astro`, `src/scripts/ui.ts`, `src/scripts/afisha-filter.ts`, `playwright.config.ts`, `tests/e2e/home.spec.ts`. Изменить `src/pages/[lang]/index.astro`.
 
@@ -183,7 +183,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 4.** `npx playwright test`: PASS.
 - [ ] **Шаг 5.** Коммит `feat: главная — шапка, главный экран, афиша`.
 
-### Задача 5. Главная: коллективы, зал, 85 лет, новости, посетителям, подвал
+### Task 5: Главная: коллективы, зал, 85 лет, новости, посетителям, подвал
 
 **Файлы:** создать `Ensembles.astro`, `Hall.astro`, `History85.astro`, `News.astro`, `Visit.astro`, `Footer.astro`, `src/content/news/{kk,ru}/*.md` (3 новости из макета), коллекцию `news` в `content.config.ts` (`{ title, date, image, lang }`), `tests/e2e/sections.spec.ts`.
 
@@ -193,7 +193,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 4.** `npx playwright test`: PASS.
 - [ ] **Шаг 5.** Коммит `feat: остальные секции главной`.
 
-### Задача 6. Анимации GSAP из npm
+### Task 6: Анимации GSAP из npm
 
 **Файлы:** создать `src/scripts/motion.ts`, `tests/e2e/motion.spec.ts`. Подключить в `Base.astro` модулем.
 
@@ -206,7 +206,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 4.** PASS.
 - [ ] **Шаг 5.** Коммит `feat: анимации GSAP из npm`.
 
-### Задача 7. Страница полной афиши и новости
+### Task 7: Страница полной афиши и новости
 
 **Файлы:** создать `src/pages/[lang]/afisha.astro`, `src/pages/[lang]/news/[...slug].astro`, `tests/e2e/afisha-page.spec.ts`.
 
@@ -216,7 +216,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 4.** PASS.
 - [ ] **Шаг 5.** Коммит `feat: страница афиши и страницы новостей`.
 
-### Задача 8. Проверка вёрстки на 320, 390 и 1440 px
+### Task 8: Проверка вёрстки на 320, 390 и 1440 px
 
 **Файлы:** создать `tests/e2e/layout.spec.ts`. Изменить `tools/screenshots.mjs`: снимать `dist/kk/` через `astro preview`, а не `site/`.
 
@@ -225,7 +225,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 3.** `node tools/screenshots.mjs`, сравнить снимки с `docs/screenshots/` и с макетом. Расхождения исправить.
 - [ ] **Шаг 4.** Коммит `test: вёрстка без прокрутки вбок, скриншоты с Astro`.
 
-### Задача 9. Страницы старого сайта *(нужны тексты)*
+### Task 9: Страницы старого сайта *(нужны тексты)*
 
 **Файлы:** создать коллекцию `pages` (`{ title, order, lang, slug }`), `src/pages/[lang]/[page].astro`, `src/content/pages/{kk,ru}/*.md`, `tests/e2e/pages.spec.ts`.
 
@@ -237,7 +237,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 4.** PASS.
 - [ ] **Шаг 5.** Коммит `feat: страницы старого сайта`.
 
-### Задача 10. Настоящая афиша и инструкция для сотрудника *(нужны данные)*
+### Task 10: Настоящая афиша и инструкция для сотрудника *(нужны данные)*
 
 **Файлы:** изменить `src/data/afisha.json`. Создать `docs/afisha-howto.md`.
 
@@ -246,7 +246,7 @@ Ensemble = { id; name:{kk,ru}; lead:{kk,ru}; image; size: 'wide'|'half'; order: 
 - [ ] **Шаг 3.** `npm run build` и `npx playwright test`: PASS.
 - [ ] **Шаг 4.** Коммит `content: настоящая афиша`.
 
-### Задача 11. Публикация *(нужно решение по хостингу)*
+### Task 11: Публикация *(нужно решение по хостингу)*
 
 **Файлы:** создать `.github/workflows/build.yml`, `tests/unit/launch.test.ts`. Удалить `site/`. Обновить `README.md`, `CLAUDE.md`, `docs/project-notes.md`.
 

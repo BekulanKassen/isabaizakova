@@ -4,3 +4,6 @@ shots/
 .DS_Store
 *.zip
 .claude/skills/
+.superpowers/
+dist/
+.astro/
