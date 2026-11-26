@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import Arrow from '../../../components/Arrow.astro';
+import { LANGS, t, type Lang } from '../../../i18n/ui';
+import { news } from '../../../lib/data';
+import { dayMonth } from '../../../lib/dates';
+import { img } from '../../../lib/images';
+
+export function getStaticPaths() {
+  return LANGS.flatMap((lang) => news.filter((n) => n.body).map((n) => ({ params: { lang, slug: n.id }, props: { item: n } })));
+}
+const lang = Astro.params.lang as Lang;
+const { item } = Astro.props;
+const path = `/${lang}/news/${item.id}/`;
+const paragraphs = item.body![lang].split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+---
+<Base lang={lang} title={`${item.title[lang]} · ${t(lang, 'brandFull')}`} description={paragraphs[0].slice(0, 160)} path={path}>
+  <Header lang={lang} path={path} home={false} />
+  <main id="main" class="sec sec-page">
+    <article class="wrap article">
+      <time class="eyebrow" datetime={item.date}>{dayMonth(item.date, lang)} {item.date.slice(0, 4)}</time>
+      <h1>{item.title[lang]}</h1>
+      <div class="article-media"><Image src={img(item.image)} alt="" widths={[720, 1200]} sizes="(min-width: 900px) 820px, 100vw" /></div>
+      {paragraphs.map((p) => <p>{p}</p>)}
+      <a class="link" href={`/${lang}/#news`}><span>{t(lang, 'newsTitle')}</span><Arrow /></a>
+    </article>
+  </main>
+  <Footer lang={lang} home={false} />
+</Base>
+<script>
+  import { initUi } from '../../../scripts/ui';
+  initUi();
+</script>

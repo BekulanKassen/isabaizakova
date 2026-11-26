@@ -135,5 +135,24 @@
     "priceFrom": 3500,
     "image": "c-jazz.webp",
     "sample": true
+  },
+  {
+    "id": "fx-jan-10",
+    "date": "2027-01-10",
+    "time": "18:00",
+    "title": {
+      "kk": "Қаңтар концерті",
+      "ru": "Январский концерт"
+    },
+    "ensemble": {
+      "kk": "Симфониялық оркестр",
+      "ru": "Симфонический оркестр"
+    },
+    "genres": [
+      "sym"
+    ],
+    "priceFrom": 2000,
+    "image": "c-symph.webp",
+    "sample": true
   }
 ]

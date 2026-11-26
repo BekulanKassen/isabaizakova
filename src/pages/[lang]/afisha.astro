@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Afisha from '../../components/Afisha.astro';
+import Footer from '../../components/Footer.astro';
+import ActionBar from '../../components/ActionBar.astro';
+import { LANGS, t, type Lang } from '../../i18n/ui';
+import { buildToday, events } from '../../lib/data';
+import { upcoming } from '../../lib/afisha';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+const lang = Astro.params.lang as Lang;
+const path = `/${lang}/afisha/`;
+---
+<Base lang={lang} title={`${t(lang, 'navAfisha')} · ${t(lang, 'brandFull')}`} description={t(lang, 'afishaPageLead')} path={path}>
+  <Header lang={lang} path={path} home={false} />
+  <main id="main">
+    <Afisha lang={lang} events={upcoming(events, buildToday)} page />
+  </main>
+  <Footer lang={lang} home={false} />
+  <ActionBar lang={lang} home={false} />
+</Base>
+<script>
+  import { initUi } from '../../scripts/ui';
+  import { initAfisha } from '../../scripts/afisha-filter';
+  import { initMotion } from '../../scripts/motion';
+  initUi();
+  initAfisha();
+  initMotion();
+</script>
