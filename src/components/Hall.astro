@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import { t, type Lang, type UiKey } from '../i18n/ui';
+import { img } from '../lib/images';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const chapters = [
+  { image: 'foyer.webp', n: 0, eyebrow: '181,5 м²' },
+  { image: 'stucco.webp', n: 1 },
+  { image: 'chandelier.webp', n: 2 },
+  { image: 'seats.webp', n: 3 },
+] as const;
+const k = (n: number, s: string) => `ch${n}${s}` as UiKey;
+---
+<section id="zal" aria-labelledby="zal-h">
+  <div class="hall-intro">
+    <div class="hall-word" aria-hidden="true">Зал</div>
+    <div class="arch-reveal" id="arch"><Image src={img('facade.webp')} alt={t(lang, 'hallFacadeAlt')} widths={[800, 1400]} sizes="100vw" /></div>
+    <div class="hall-cap on-dark" style="background:transparent">
+      <div class="wrap">
+        <p class="eyebrow">{t(lang, 'hallEyebrow')}</p>
+        <h2 id="zal-h" style="margin-top:12px">{t(lang, 'hallTitle')}</h2>
+        <p>{t(lang, 'hallLead')}</p>
+      </div>
+    </div>
+  </div>
+  <div class="wrap chapters">
+    <div class="ch-stage" aria-hidden="true">
+      <div class="ch-frame" id="chframe">
+        {chapters.map((c, i) => <Image class={i === 0 ? 'on' : undefined} src={img(c.image)} alt="" width={900} />)}
+      </div>
+    </div>
+    <div class="ch-list">
+      {chapters.map((c) => (
+        <div class="ch" data-i={c.n}>
+          <div class="ch-img"><Image src={img(c.image)} alt={t(lang, k(c.n, 'Alt'))} width={800} /></div>
+          {'eyebrow' in c && <span class="eyebrow tnum">{c.eyebrow}</span>}
+          <h3>{t(lang, k(c.n, 'Title'))}</h3>
+          <p>{t(lang, k(c.n, 'Text'))}</p>
+          {c.n === 3 && (
+            <div class="seats">
+              <div><b class="tnum">234</b><span>{t(lang, 'stalls')}</span></div>
+              <div><b class="tnum">194</b><span>{t(lang, 'amphi')}</span></div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

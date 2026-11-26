@@ -1,0 +1,45 @@
+---
+import { Image } from 'astro:assets';
+import { t, type Lang } from '../i18n/ui';
+import { img } from '../lib/images';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const years = [
+  { y: 1941, text: 'm1941', image: 'a-order.webp', alt: 'm1941Alt', doc: true },
+  { y: 1943, text: 'm1943' },
+  { y: 1946, text: 'm1946', image: 'a-stage.webp', alt: 'm1946Alt' },
+  { y: 1965, text: 'm1965' },
+  { y: 1971, text: 'm1971', image: 'a-band.webp', alt: 'm1971Alt' },
+  { y: 2026, text: 'm2026', link: true },
+] as const;
+---
+<section class="on-dark" id="tarih" aria-labelledby="tarih-h">
+  <div class="y85">
+    <div class="arc a1" data-speed="0.9"><Image src={img('a-1970s.webp')} alt={t(lang, 'arc1Alt')} width={560} /></div>
+    <div class="arc a2" data-speed="0.5"><Image src={img('a-singer.webp')} alt={t(lang, 'arc2Alt')} width={440} /></div>
+    <div class="arc a3" data-speed="1.2"><Image src={img('a-piano.webp')} alt={t(lang, 'arc3Alt')} width={520} /></div>
+    <div class="wrap y85-grid">
+      <div class="big85 tnum" aria-hidden="true">85</div>
+      <div class="y85-txt">
+        <h2 id="tarih-h"><span class="sr">85 </span>{t(lang, 'y85Title')}</h2>
+        <p>{t(lang, 'y85Text')}</p>
+      </div>
+    </div>
+  </div>
+  <div class="tl-pin" id="tl">
+    <div class="wrap">
+      <div class="tl-head"><h3>{t(lang, 'milestones')}</h3></div>
+      <div class="tl-prog" aria-hidden="true"><i id="tlbar"></i></div>
+    </div>
+    <div class="tl-track" id="track">
+      {years.map((m) => (
+        <div class:list={['yr', { doc: 'doc' in m }]}>
+          <b class="tnum">{m.y}</b>
+          <p>{t(lang, m.text)}</p>
+          {'image' in m && <figure><Image src={img(m.image)} alt={t(lang, m.alt)} width={680} /></figure>}
+          {'link' in m && <a class="btn btn-line btn-sm" href="#afisha" style="justify-self:start">{t(lang, 'seasonAfisha')}</a>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

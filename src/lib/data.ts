@@ -2,8 +2,9 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'astro/zod';
 import ensemblesRaw from '../data/ensembles.json';
+import newsRaw from '../data/news.json';
 import { todayInPavlodar } from './dates';
-import { ensembleSchema, eventsSchema, type Ensemble, type Event } from './schema';
+import { ensembleSchema, eventsSchema, newsSchema, type Ensemble, type Event, type News } from './schema';
 
 function parse<T>(schema: z.ZodType<T>, data: unknown, file: string): T {
   const r = schema.safeParse(data);
@@ -21,3 +22,5 @@ export const ensembles: Ensemble[] = parse(z.array(ensembleSchema), ensemblesRaw
 
 /** Date the site is built for; BUILD_TODAY pins it in tests. */
 export const buildToday: string = process.env.BUILD_TODAY ?? todayInPavlodar();
+
+export const news: News[] = parse(z.array(newsSchema), newsRaw, 'src/data/news.json').sort((a, b) => b.date.localeCompare(a.date));

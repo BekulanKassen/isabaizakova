@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import { t, type Lang } from '../i18n/ui';
+import { dayMonth } from '../lib/dates';
+import { news } from '../lib/data';
+import { img } from '../lib/images';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const projects = ['Самға', 'Тағылым', 'Ән аманат', 'Алтын бесік — туған ел'];
+---
+<section class="sec" id="news" aria-labelledby="news-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="news-h">{t(lang, 'newsTitle')}</h2>
+    </div>
+    <div class="news">
+      {news.slice(0, 3).map((n) => {
+        const Tag = n.body ? 'a' : 'article';
+        return (
+          <Tag class="post" href={n.body ? `/${lang}/news/${n.id}/` : undefined}>
+            <div class="post-media"><Image src={img(n.image)} alt="" width={720} /></div>
+            <time datetime={n.date}>{dayMonth(n.date, lang)} {n.date.slice(0, 4)}</time>
+            <h3>{n.title[lang]}</h3>
+          </Tag>
+        );
+      })}
+    </div>
+    <div class="projects">
+      <span class="eyebrow">{t(lang, 'projectsTitle')}</span>
+      <ul>{projects.map((p) => <li>{p}</li>)}</ul>
+    </div>
+  </div>
+</section>

@@ -337,3 +337,4 @@ h3{font-size:clamp(24px,2.2vw,32px);line-height:1.18}
 .ev-group:first-child .month-sub{margin-top:0}
 .afisha-links{display:flex;gap:8px 24px;flex-wrap:wrap}
 .next-title .sample-mark{font:500 14px/1 var(--f-t);vertical-align:middle}
+.projects li{font-family:var(--f-d);font-size:clamp(24px,2.4vw,36px);line-height:1.2}

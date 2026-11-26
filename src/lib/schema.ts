@@ -46,3 +46,13 @@ export const ensembleSchema = z.object({
   order: z.number().int(),
 });
 export type Ensemble = z.infer<typeof ensembleSchema>;
+
+export const newsSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(isRealDate, 'такой даты нет'),
+  image: imageName,
+  title: both,
+  /** Full text, paragraphs separated by a blank line. A news item gets its own page only when it has a body. */
+  body: both.optional(),
+});
+export type News = z.infer<typeof newsSchema>;

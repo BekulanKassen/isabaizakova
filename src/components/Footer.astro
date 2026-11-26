@@ -1,0 +1,28 @@
+---
+import { t, type Lang } from '../i18n/ui';
+interface Props { lang: Lang; home: boolean }
+const { lang, home } = Astro.props;
+const base = home ? '' : `/${lang}/`;
+---
+<footer class="foot on-dark">
+  <div class="wrap">
+    <div class="foot-top">
+      <div><p class="foot-brand">{t(lang, 'brandTop')}<br>{t(lang, 'brandBottom')}</p></div>
+      <div><h4>{t(lang, 'footSite')}</h4><ul>
+        <li><a href={`/${lang}/afisha/`}>{t(lang, 'navAfisha')}</a></li>
+        <li><a href={`${base}#ujymdar`}>{t(lang, 'navEnsembles')}</a></li>
+        <li><a href={`${base}#zal`}>{t(lang, 'navHall')}</a></li>
+        <li><a href={`${base}#tarih`}>{t(lang, 'navHistory')}</a></li>
+      </ul></div>
+      <div><h4>{t(lang, 'contacts')}</h4><ul>
+        <li><a href="tel:+77182228087">+7 (7182) 22-80-87</a></li>
+        <li><a href="mailto:isa.baizakov2012@yandex.kz">isa.baizakov2012@yandex.kz</a></li>
+        <li><a href="https://www.instagram.com/isa_philharmonic/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-bot">
+      <span>{t(lang, 'footCopy', { year: new Date().getFullYear() })}</span>
+      <span>{t(lang, 'addressValue')}</span>
+    </div>
+  </div>
+</footer>
