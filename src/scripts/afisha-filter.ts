@@ -19,7 +19,27 @@ function refresh(root: HTMLElement, genre: string): void {
 
 export function hidePast(root: HTMLElement, today: string): void {
   rows(root).forEach((r) => { if ((r.dataset.date ?? '') < today) r.dataset.past = '1'; });
+  const left = rows(root).filter((r) => !past(r));
+  root.querySelectorAll<HTMLElement>('.chip').forEach((c) => {
+    const g = c.dataset.g ?? 'all';
+    if (g !== 'all') c.hidden = !left.some((r) => has(r, g));
+  });
+  if (left.length === 0) {
+    // The build is older than the last concert: say so honestly instead of showing stale data.
+    root.querySelectorAll<HTMLElement>('.month, .chips, #events, .ev-filter-empty').forEach((el) => { el.hidden = true; });
+    const empty = root.querySelector<HTMLElement>('.ev-empty');
+    if (empty) empty.hidden = false;
+    return;
+  }
   refresh(root, 'all');
+}
+
+/** Hide the hero's next-concert card once its date is over. */
+export function hidePastNext(today: string): void {
+  const card = document.querySelector<HTMLElement>('.next');
+  if (!card || (card.dataset.date ?? '') >= today) return;
+  card.hidden = true;
+  card.closest('.hero-grid')?.classList.add('solo');
 }
 
 export function initFilter(root: HTMLElement): void {
@@ -32,8 +52,10 @@ export function initFilter(root: HTMLElement): void {
 }
 
 export function initAfisha(): void {
+  const today = todayInPavlodar();
+  hidePastNext(today);
   const root = document.getElementById('afisha');
   if (!root || !root.querySelector('.ev')) return;
-  hidePast(root, todayInPavlodar());
+  hidePast(root, today);
   initFilter(root);
 }

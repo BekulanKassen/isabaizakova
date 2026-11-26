@@ -51,12 +51,29 @@ test.describe('with a fixture afisha', () => {
     await expect(page.locator('#afisha .ev[data-date="2026-12-19"]')).toBeVisible();
   });
 
-  test('a filter with nothing left shows the empty line', async ({ page }) => {
+  test('a genre whose concerts are all over loses its chip', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2026-12-14T10:00:00+05:00'));
     await page.goto(FX + '/ru/');
-    await page.locator('#afisha .chip', { hasText: 'Детям' }).click();
-    await expect(page.locator('#afisha .ev:visible')).toHaveCount(0);
-    await expect(page.locator('#afisha .ev-filter-empty')).toBeVisible();
+    await expect(page.locator('#afisha .chip', { hasText: 'Детям' })).toBeHidden();
+    await expect(page.locator('#afisha .chip', { hasText: 'Джаз' })).toBeVisible();
+  });
+
+  test('when every concert is over the page says so instead of showing stale data', async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2027-03-01T10:00:00+05:00'));
+    await page.goto(FX + '/kk/');
+    await expect(page.locator('.next')).toBeHidden();
+    await expect(page.locator('.hero-grid')).toHaveClass(/solo/);
+    await expect(page.locator('#afisha .month')).toBeHidden();
+    await expect(page.locator('#afisha .chips')).toBeHidden();
+    await expect(page.locator('#afisha .ev-filter-empty')).toBeHidden();
+    await expect(page.locator('#afisha .ev-empty')).toBeVisible();
+    await expect(page.locator('#afisha .ev-empty')).toContainText('Freedom Ticketon');
+  });
+
+  test('a next-concert card that is over is hidden', async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2026-12-06T10:00:00+05:00'));
+    await page.goto(FX + '/kk/');
+    await expect(page.locator('.next')).toBeHidden();
   });
 
   test('without JavaScript every event is visible', async ({ browser }) => {

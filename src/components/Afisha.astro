@@ -20,12 +20,11 @@ const Heading = page ? 'h1' : 'h2';
       <Heading id="afisha-h">{t(lang, 'navAfisha')}</Heading>
       <p>{t(lang, page ? 'afishaPageLead' : 'afishaLead')}</p>
     </div>
-    {events.length === 0 ? (
-      <div class="ev-empty">
-        <p>{t(lang, 'afishaEmpty')}</p>
-        <a class="btn btn-seat" href={TICKETON} target="_blank" rel="noopener"><span>{t(lang, 'afishaOnTicketon')}</span><Arrow /></a>
-      </div>
-    ) : (
+    <div class="ev-empty" hidden={events.length > 0}>
+      <p>{t(lang, 'afishaEmpty')}</p>
+      <a class="btn btn-seat" href={TICKETON} target="_blank" rel="noopener"><span>{t(lang, 'afishaOnTicketon')}</span><Arrow /></a>
+    </div>
+    {events.length > 0 && (
       <>
         <div class="month">
           {groups.length === 1 && <b>{monthTitle(groups[0].ym, lang)}</b>}

@@ -18,3 +18,17 @@ for (const width of [320, 390, 1440]) {
     });
   }
 }
+
+for (const width of [320, 390]) {
+  for (const lang of ['kk', 'ru']) {
+    test(`concert titles fit their cell at ${width}px (${lang})`, async ({ browser }) => {
+      const ctx = await browser.newContext({ viewport: { width, height: 844 } });
+      const page = await ctx.newPage();
+      await page.goto(`${FX}/${lang}/afisha/`);
+      const bad = await page.locator('.ev-t h3, .ev-t p').evaluateAll((els) =>
+        els.filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent));
+      expect(bad).toEqual([]);
+      await ctx.close();
+    });
+  }
+}
