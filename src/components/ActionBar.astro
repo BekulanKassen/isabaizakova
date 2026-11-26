@@ -1,0 +1,10 @@
+---
+import { t, type Lang } from '../i18n/ui';
+interface Props { lang: Lang; home: boolean }
+const { lang, home } = Astro.props;
+const afisha = home ? '#afisha' : `/${lang}/afisha/`;
+---
+<div class="actbar" id="actbar">
+  <a class="btn btn-seat" href={afisha}>{t(lang, 'buyTicket')}</a>
+  <a class="btn btn-ink" href={afisha}>{t(lang, 'navAfisha')}</a>
+</div>

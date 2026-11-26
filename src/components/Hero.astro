@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import Arrow from './Arrow.astro';
+import NextConcert from './NextConcert.astro';
+import { t, type Lang } from '../i18n/ui';
+import { img } from '../lib/images';
+import type { Event } from '../lib/schema';
+interface Props { lang: Lang; next?: Event }
+const { lang, next } = Astro.props;
+---
+<section class="hero" id="top" aria-labelledby="h1">
+  <div class="hero-media"><Image src={img('hero.webp')} alt={t(lang, 'heroImgAlt')} widths={[800, 1200, 1600]} sizes="100vw" loading="eager" fetchpriority="high" /></div>
+  <div class="wrap hero-content">
+    <div class:list={['hero-grid', { solo: !next }]}>
+      <div>
+        <p class="eyebrow" data-in>{t(lang, 'heroEyebrow')}</p>
+        <h1 id="h1" style="margin-top:16px">
+          <span class="h1-line"><span>{t(lang, 'brandTop')}</span></span>
+          <span class="h1-line"><span>{t(lang, 'brandBottom')}</span></span>
+        </h1>
+        <p class="hero-lead" data-in>{t(lang, 'heroLead')}</p>
+        <div class="hero-ctas" data-in>
+          <a class="btn btn-seat" href="#afisha"><span>{t(lang, 'seeAfisha')}</span><Arrow /></a>
+        </div>
+      </div>
+      {next && <NextConcert lang={lang} event={next} />}
+    </div>
+    <div class="facts" data-in>
+      <div><b class="tnum">1941</b><span>{t(lang, 'factFounded')}</span></div>
+      <div><b class="tnum">428</b><span>{t(lang, 'factSeats')}</span></div>
+      <div><b class="tnum">8</b><span>{t(lang, 'factEnsembles')}</span></div>
+      <div><b class="tnum">8 × 8 м</b><span>{t(lang, 'factStage')}</span></div>
+    </div>
+  </div>
+</section>
+<div class="ochre-rule" aria-hidden="true"></div>

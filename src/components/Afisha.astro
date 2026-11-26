@@ -1,0 +1,66 @@
+---
+import { Image } from 'astro:assets';
+import Arrow from './Arrow.astro';
+import EventRow from './EventRow.astro';
+import { t, TICKETON, type Lang } from '../i18n/ui';
+import { byMonth, countLabel } from '../lib/afisha';
+import { monthTitle } from '../lib/dates';
+import { img } from '../lib/images';
+import { GENRES } from '../lib/schema';
+import type { Event } from '../lib/schema';
+interface Props { lang: Lang; events: Event[]; more?: boolean; page?: boolean }
+const { lang, events, more = false, page = false } = Astro.props;
+const groups = byMonth(events);
+const genres = GENRES.filter((g) => events.some((e) => e.genres.includes(g)));
+const Heading = page ? 'h1' : 'h2';
+---
+<section class:list={['sec', { 'sec-page': page }]} id="afisha" aria-labelledby="afisha-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <Heading id="afisha-h">{t(lang, 'navAfisha')}</Heading>
+      <p>{t(lang, page ? 'afishaPageLead' : 'afishaLead')}</p>
+    </div>
+    {events.length === 0 ? (
+      <div class="ev-empty">
+        <p>{t(lang, 'afishaEmpty')}</p>
+        <a class="btn btn-seat" href={TICKETON} target="_blank" rel="noopener"><span>{t(lang, 'afishaOnTicketon')}</span><Arrow /></a>
+      </div>
+    ) : (
+      <>
+        <div class="month">
+          {groups.length === 1 && <b>{monthTitle(groups[0].ym, lang)}</b>}
+          <span class="eyebrow" id="ev-count" data-lang={lang}>{countLabel(events.length, lang)}</span>
+        </div>
+        {genres.length > 1 && (
+          <div class="chips" role="group" aria-label={t(lang, 'genreGroup')}>
+            <button class="chip" type="button" data-g="all" aria-pressed="true">{t(lang, 'genre_all')}</button>
+            {genres.map((g) => <button class="chip" type="button" data-g={g} aria-pressed="false">{t(lang, `genre_${g}`)}</button>)}
+          </div>
+        )}
+        <div id="events">
+          {groups.map((grp) => (
+            <div class="ev-group">
+              {groups.length > 1 && <h3 class="month-sub">{monthTitle(grp.ym, lang)}</h3>}
+              <ul class="events">
+                {grp.events.map((e) => <EventRow lang={lang} event={e} index={events.indexOf(e)} />)}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p class="ev-filter-empty" hidden>{t(lang, 'afishaFilterEmpty')}</p>
+      </>
+    )}
+    <div class="afisha-foot">
+      <span>{t(lang, 'kassaShort')}</span>
+      <span class="afisha-links">
+        {more && <a class="link" href={`/${lang}/afisha/`}><span>{t(lang, 'afishaAll')}</span><Arrow /></a>}
+        {events.length > 0 && <a class="link" href={TICKETON} target="_blank" rel="noopener"><span>{t(lang, 'afishaOnTicketon')}</span><Arrow /></a>}
+      </span>
+    </div>
+  </div>
+  {events.length > 0 && (
+    <div class="preview" id="preview" aria-hidden="true">
+      {events.map((e) => <Image src={img(e.image)} alt="" width={600} />)}
+    </div>
+  )}
+</section>

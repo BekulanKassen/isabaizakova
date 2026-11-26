@@ -1,0 +1,40 @@
+---
+import LangSwitch from './LangSwitch.astro';
+import { t, type Lang } from '../i18n/ui';
+interface Props { lang: Lang; path: string; home: boolean }
+const { lang, path, home } = Astro.props;
+const base = home ? '' : `/${lang}/`;
+const links = [
+  { href: home ? '#afisha' : `/${lang}/afisha/`, key: 'navAfisha' },
+  { href: `${base}#ujymdar`, key: 'navEnsembles' },
+  { href: `${base}#zal`, key: 'navHall' },
+  { href: `${base}#tarih`, key: 'navHistory' },
+  { href: `${base}#kelushilerge`, key: 'navVisit' },
+] as const;
+const buy = home ? '#afisha' : `/${lang}/afisha/`;
+---
+<header class:list={['head', { solid: !home, fixed: !home }]} id="head">
+  <div class="wrap">
+    <a class="brand" href={home ? '#top' : `/${lang}/`} aria-label={t(lang, 'brandFull')}>
+      <svg viewBox="0 0 38 30" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 29V15a5.5 5.5 0 0 1 11 0v14M13.5 29V12a5.5 5.5 0 0 1 11 0v17M25 29V15a5.5 5.5 0 0 1 11 0v14M1 29h36"/></svg>
+      <span><span>{t(lang, 'brandTop')}</span><small>{t(lang, 'brandBottom')}</small></span>
+    </a>
+    <nav class="nav" aria-label={t(lang, 'navMain')}>
+      {links.map((l) => <a href={l.href}>{t(lang, l.key)}</a>)}
+    </nav>
+    <LangSwitch lang={lang} path={path} />
+    <a class="btn btn-seat btn-sm" href={buy}>{t(lang, 'buyTicket')}</a>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label={t(lang, 'menu')}><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 6h16M2 14h16"/></svg></button>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <div class="menu-top">
+    <LangSwitch lang={lang} path={path} />
+    <button class="burger" type="button" style="display:grid" data-close aria-label={t(lang, 'close')}><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+  </div>
+  <nav aria-label={t(lang, 'menu')}>
+    {links.map((l) => <a href={l.href}>{t(lang, l.key)}</a>)}
+  </nav>
+  <a class="btn btn-seat" href={buy}>{t(lang, 'buyTicket')}</a>
+</div>

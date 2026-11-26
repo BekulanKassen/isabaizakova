@@ -1,0 +1,9 @@
+---
+import { altPath, t, type Lang } from '../i18n/ui';
+interface Props { lang: Lang; path: string }
+const { lang, path } = Astro.props;
+---
+<div class="lang" role="group" aria-label={t(lang, 'langGroup')}>
+  <a href={altPath(path, 'kk')} hreflang="kk" lang="kk" aria-current={lang === 'kk' ? 'true' : undefined}><span>ҚАЗ</span></a>
+  <a href={altPath(path, 'ru')} hreflang="ru" lang="ru" aria-current={lang === 'ru' ? 'true' : undefined}><span>РУС</span></a>
+</div>

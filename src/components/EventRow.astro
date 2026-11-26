@@ -1,0 +1,21 @@
+---
+import { Image } from 'astro:assets';
+import { t, type Lang } from '../i18n/ui';
+import { weekday } from '../lib/dates';
+import { priceLabel } from '../lib/afisha';
+import { img } from '../lib/images';
+import type { Event } from '../lib/schema';
+interface Props { lang: Lang; event: Event; index: number }
+const { lang, event: e, index } = Astro.props;
+---
+<li class="ev" data-g={e.genres.join(' ')} data-date={e.date} data-img={index}>
+  <span class="ev-day tnum">{e.date.slice(8)}</span>
+  <span class="ev-when"><b>{weekday(e.date, lang)}</b>{e.time}</span>
+  <span class="ev-thumb"><Image src={img(e.image)} alt="" width={152} /></span>
+  <div class="ev-t">
+    <h3>{e.title[lang]}</h3>
+    <p>{e.ensemble[lang]}{e.sample && <span class="sample-mark"> · {t(lang, 'sampleMark')}</span>}</p>
+  </div>
+  <span class="ev-price tnum">{priceLabel(e.priceFrom, lang)}</span>
+  <a class="btn btn-seat btn-sm" href={e.ticketUrl} target="_blank" rel="noopener">{t(lang, 'ticket')}</a>
+</li>

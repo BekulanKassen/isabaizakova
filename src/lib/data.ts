@@ -1,7 +1,9 @@
-import afishaRaw from '../data/afisha.json';
-import ensemblesRaw from '../data/ensembles.json';
-import { ensembleSchema, eventsSchema, type Ensemble, type Event } from './schema';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { z } from 'astro/zod';
+import ensemblesRaw from '../data/ensembles.json';
+import { todayInPavlodar } from './dates';
+import { ensembleSchema, eventsSchema, type Ensemble, type Event } from './schema';
 
 function parse<T>(schema: z.ZodType<T>, data: unknown, file: string): T {
   const r = schema.safeParse(data);
@@ -12,5 +14,10 @@ function parse<T>(schema: z.ZodType<T>, data: unknown, file: string): T {
   return r.data;
 }
 
-export const events: Event[] = parse(eventsSchema, afishaRaw, 'src/data/afisha.json');
+/** AFISHA_FILE lets the e2e tests build the site with a fixture afisha. */
+const afishaFile = process.env.AFISHA_FILE ?? 'src/data/afisha.json';
+export const events: Event[] = parse(eventsSchema, JSON.parse(readFileSync(resolve(afishaFile), 'utf-8')), afishaFile);
 export const ensembles: Ensemble[] = parse(z.array(ensembleSchema), ensemblesRaw, 'src/data/ensembles.json').sort((a, b) => a.order - b.order);
+
+/** Date the site is built for; BUILD_TODAY pins it in tests. */
+export const buildToday: string = process.env.BUILD_TODAY ?? todayInPavlodar();

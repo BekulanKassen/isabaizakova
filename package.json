@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "vitest run",
-    "e2e": "playwright test --trace off"
+    "e2e": "playwright test --trace off",
+    "build:fixture": "AFISHA_FILE=tests/fixtures/afisha.json BUILD_TODAY=2026-12-01 astro build --outDir dist-fixture"
   },
   "dependencies": {
     "astro": "^7.4.13",

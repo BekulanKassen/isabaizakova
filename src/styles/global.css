@@ -324,3 +324,16 @@ h3{font-size:clamp(24px,2.2vw,32px);line-height:1.18}
 @media (prefers-reduced-motion:reduce){
   .col-zoom,.post-media img,.ch-frame img,.arrow,.btn,.chip{transform:none!important}
 }
+
+/* ============ Astro additions ============ */
+.hero-grid.solo{grid-template-columns:minmax(0,1fr)}
+.head.fixed{position:sticky;top:0}
+.sec-page{padding-top:64px}
+.sample-mark{color:var(--seat);font-weight:500}
+.ev-empty{display:grid;gap:24px;justify-items:start;max-width:640px;padding:40px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ev-empty p{font-size:19px;color:var(--ink-2)}
+.ev-filter-empty{padding:32px 0;color:var(--ink-2)}
+.month-sub{font-size:28px;margin:40px 0 16px}
+.ev-group:first-child .month-sub{margin-top:0}
+.afisha-links{display:flex;gap:8px 24px;flex-wrap:wrap}
+.next-title .sample-mark{font:500 14px/1 var(--f-t);vertical-align:middle}

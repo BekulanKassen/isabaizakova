@@ -1,0 +1,17 @@
+---
+import Arrow from './Arrow.astro';
+import { t, type Lang } from '../i18n/ui';
+import { dayMonth, weekday } from '../lib/dates';
+import { priceLabel } from '../lib/afisha';
+import type { Event } from '../lib/schema';
+interface Props { lang: Lang; event: Event }
+const { lang, event: e } = Astro.props;
+const [y, , d] = e.date.split('-');
+const month = dayMonth(e.date, lang).split(' ')[1];
+---
+<article class="next" data-in aria-labelledby="next-t">
+  <div class="next-top"><span><i></i><span>{t(lang, 'nextConcert')}</span></span><span>{y}</span></div>
+  <div class="next-date"><b class="tnum">{d}</b><span>{month}, {weekday(e.date, lang)}<br>{e.time} · {e.ensemble[lang]}</span></div>
+  <p class="next-title" id="next-t">{e.title[lang]}{e.sample && <span class="sample-mark"> · {t(lang, 'sampleMark')}</span>}</p>
+  <a class="btn btn-seat" href={e.ticketUrl} target="_blank" rel="noopener"><span>{t(lang, 'ticketsFrom', { price: priceLabel(e.priceFrom, lang) })}</span><Arrow /></a>
+</article>

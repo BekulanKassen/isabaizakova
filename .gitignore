@@ -7,3 +7,5 @@ shots/
 .superpowers/
 dist/
 .astro/
+dist-fixture/
+test-results/

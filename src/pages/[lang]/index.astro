@@ -1,12 +1,32 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Hero from '../../components/Hero.astro';
+import Afisha from '../../components/Afisha.astro';
+import ActionBar from '../../components/ActionBar.astro';
 import { LANGS, t, type Lang } from '../../i18n/ui';
+import { buildToday, events } from '../../lib/data';
+import { nextConcert, upcoming } from '../../lib/afisha';
 
 export function getStaticPaths() {
   return LANGS.map((lang) => ({ params: { lang } }));
 }
 const lang = Astro.params.lang as Lang;
+const path = `/${lang}/`;
+const soon = upcoming(events, buildToday);
+const HOME_LIMIT = 7;
 ---
-<Base lang={lang} title={t(lang, 'brandFull')} description={t(lang, 'metaDescription')} path={`/${lang}/`}>
-  <main id="main"><h1>{t(lang, 'brandFull')}</h1></main>
+<Base lang={lang} title={t(lang, 'brandFull')} description={t(lang, 'metaDescription')} path={path}>
+  <Header lang={lang} path={path} home />
+  <main id="main">
+    <Hero lang={lang} next={nextConcert(events, buildToday)} />
+    <Afisha lang={lang} events={soon.slice(0, HOME_LIMIT)} more={soon.length > HOME_LIMIT} />
+  </main>
+  <ActionBar lang={lang} home />
 </Base>
+<script>
+  import { initUi } from '../../scripts/ui';
+  import { initAfisha } from '../../scripts/afisha-filter';
+  initUi();
+  initAfisha();
+</script>
