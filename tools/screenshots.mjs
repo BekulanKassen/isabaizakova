@@ -1,20 +1,21 @@
 // Снимки сайта в ключевых точках прокрутки на ширине 1440 и 390 px.
-// Поднимает свой маленький http-сервер над папкой site/, поэтому отдельный сервер не нужен.
+// Снимает собранный сайт из dist/ (сначала npm run build). Свой http-сервер, отдельный не нужен.
 //
-//   npm i -D playwright
-//   npx playwright install chromium
-//   node tools/screenshots.mjs            -> папка shots/
+//   npm run build
+//   node tools/screenshots.mjs            -> папка shots/   (страница /kk/)
+//   node tools/screenshots.mjs ru         -> русская версия
 //
 // GSAP и шрифты грузятся из интернета (cdnjs, Google Fonts), без сети эффекты не включатся.
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 import http from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = fileURLToPath(new URL('../site/', import.meta.url));
+const ROOT = fileURLToPath(new URL('../dist/', import.meta.url));
+const LANG = process.argv[2] === 'ru' ? 'ru' : 'kk';
 const OUT = fileURLToPath(new URL('../shots/', import.meta.url));
-const TYPES = { '.html': 'text/html; charset=utf-8', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml' };
 
 const server = http.createServer(async (req, res) => {
   const path = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
@@ -28,7 +29,7 @@ const server = http.createServer(async (req, res) => {
   }
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
-const url = `http://127.0.0.1:${server.address().port}/`;
+const url = `http://127.0.0.1:${server.address().port}/${LANG}/`;
 await mkdir(OUT, { recursive: true });
 
 const points = {

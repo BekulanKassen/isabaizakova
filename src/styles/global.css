@@ -344,3 +344,4 @@ h3{font-size:clamp(24px,2.2vw,32px);line-height:1.18}
 .article-media img{width:100%;height:100%;object-fit:cover}
 .article p{font-size:18px;color:var(--ink-2);max-width:68ch}
 .article .link{justify-self:start}
+@media (max-width:899px){.foot-top{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.foot-top>div:last-child{grid-column:1/-1}.foot a{overflow-wrap:anywhere}}

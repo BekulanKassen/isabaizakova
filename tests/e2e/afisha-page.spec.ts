@@ -7,7 +7,7 @@ test('afisha page groups concerts by month with ticket links', async ({ page }) 
   await page.goto(FX + '/ru/afisha/');
   await expect(page.locator('h1')).toHaveText('Афиша');
   await expect(page.locator('.month-sub')).toHaveText(['Декабрь 2026', 'Январь 2027']);
-  await expect(page.locator('.ev')).toHaveCount(8);
+  await expect(page.locator('.ev')).toHaveCount(9);
   for (const a of await page.locator('.ev a.btn').all()) {
     await expect(a).toHaveAttribute('href', /^https:\/\/ticketon\.kz\//);
     await expect(a).toHaveAttribute('target', '_blank');
