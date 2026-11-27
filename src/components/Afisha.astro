@@ -1,4 +1,6 @@
 ---
+import Divider from './Divider.astro';
+import Rosette from './Rosette.astro';
 import { Image } from 'astro:assets';
 import Arrow from './Arrow.astro';
 import EventRow from './EventRow.astro';
@@ -17,10 +19,11 @@ const Heading = page ? 'h1' : 'h2';
 <section class:list={['sec', { 'sec-page': page }]} id="afisha" aria-labelledby="afisha-h">
   <div class="wrap">
     <div class="sec-head">
-      <Heading id="afisha-h">{t(lang, 'navAfisha')}</Heading>
+      <div><span class="numeral">I</span><Heading id="afisha-h">{t(lang, 'navAfisha')}</Heading><Divider /></div>
       <p>{t(lang, page ? 'afishaPageLead' : 'afishaLead')}</p>
     </div>
     <div class="ev-empty" hidden={events.length > 0}>
+      <Rosette size={52} />
       <p>{t(lang, 'afishaEmpty')}</p>
       <a class="btn btn-seat" href={TICKETON} target="_blank" rel="noopener"><span>{t(lang, 'afishaOnTicketon')}</span><Arrow /></a>
     </div>

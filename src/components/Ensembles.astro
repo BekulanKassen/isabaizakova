@@ -1,4 +1,5 @@
 ---
+import Divider from './Divider.astro';
 import { Image } from 'astro:assets';
 import { t, type Lang } from '../i18n/ui';
 import { ensembles } from '../lib/data';
@@ -10,7 +11,7 @@ const cls = { wide: 'w7', narrow: 'w5', half: 'half' } as const;
 <section class="sec cols-sec" id="ujymdar" aria-labelledby="cols-h">
   <div class="wrap">
     <div class="sec-head">
-      <h2 id="cols-h">{t(lang, 'ensemblesTitle')}</h2>
+      <div><span class="numeral">II</span><h2 id="cols-h">{t(lang, 'ensemblesTitle')}</h2><Divider /></div>
       <p>{t(lang, 'ensemblesLead')}</p>
     </div>
     <div class="cols">

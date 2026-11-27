@@ -1,13 +1,15 @@
 ---
+import Frieze from './Frieze.astro';
 import { t, type Lang } from '../i18n/ui';
 interface Props { lang: Lang; home: boolean }
 const { lang, home } = Astro.props;
 const base = home ? '' : `/${lang}/`;
 ---
 <footer class="foot on-dark">
+  <Frieze tone="gold" />
   <div class="wrap">
     <div class="foot-top">
-      <div><p class="foot-brand">{t(lang, 'brandTop')}<br>{t(lang, 'brandBottom')}</p></div>
+      <div><p class="foot-brand">{t(lang, 'brandTop')}<br><em>{t(lang, 'brandBottom')}</em></p></div>
       <div><h4>{t(lang, 'footSite')}</h4><ul>
         <li><a href={`/${lang}/afisha/`}>{t(lang, 'navAfisha')}</a></li>
         <li><a href={`${base}#ujymdar`}>{t(lang, 'navEnsembles')}</a></li>

@@ -1,4 +1,5 @@
 ---
+import Divider from './Divider.astro';
 import { Image } from 'astro:assets';
 import { t, type Lang } from '../i18n/ui';
 import { dayMonth } from '../lib/dates';
@@ -11,7 +12,7 @@ const projects = ['Самға', 'Тағылым', 'Ән аманат', 'Алты
 <section class="sec" id="news" aria-labelledby="news-h">
   <div class="wrap">
     <div class="sec-head">
-      <h2 id="news-h">{t(lang, 'newsTitle')}</h2>
+      <div><span class="numeral">V</span><h2 id="news-h">{t(lang, 'newsTitle')}</h2><Divider /></div>
     </div>
     <div class="news">
       {news.slice(0, 3).map((n) => {

@@ -1,0 +1,21 @@
+---
+// A band of ornament across the full width: beads (classical astragal), ram's horns, double rule.
+// The pattern lives inside this svg so its currentColor follows the band's tone.
+interface Props { tone?: 'gold' | 'seat' | 'ochre'; class?: string }
+const { tone = 'gold', class: cls } = Astro.props;
+const id = `fz-${Math.random().toString(36).slice(2, 9)}`;
+const beads = Array.from({ length: 8 }, (_, i) => 4 + i * 8);
+---
+<div class:list={['frieze', `tone-${tone}`, cls]} aria-hidden="true">
+  <svg width="100%" height="52">
+    <defs>
+      <pattern id={id} width="64" height="52" patternUnits="userSpaceOnUse">
+        <g fill="currentColor">{beads.map((x) => <circle cx={x} cy="4" r="1.5" />)}</g>
+        <path d="M0 10.5H64M0 45.5H64M0 49.5H64" stroke="currentColor" stroke-width="1" />
+        <use href="#o-pair" transform="translate(32,38) scale(1.05)" />
+        <path d="M0 26 l4 4 -4 4 -4 -4z M64 26 l4 4 -4 4 -4 -4z" fill="currentColor" />
+      </pattern>
+    </defs>
+    <rect width="100%" height="52" fill={`url(#${id})`} />
+  </svg>
+</div>

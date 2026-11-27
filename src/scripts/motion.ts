@@ -66,5 +66,16 @@ export function initMotion(): void {
     list.addEventListener('mouseleave', () => gsap.to(pv, { autoAlpha: 0, scale: 0.94, duration: 0.2, ease: 'power2.out' }));
   }
 
+  // Ornament: friezes unroll from the centre, cornices draw out, rosettes turn into place. Once each.
+  all('.frieze').forEach((f) => {
+    gsap.fromTo(f, { clipPath: 'inset(0% 50% 0% 50%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'power3.inOut', scrollTrigger: { trigger: f, start: 'top 92%', once: true } });
+  });
+  all('.divider svg').forEach((d) => {
+    gsap.fromTo(d, { scaleX: 0.3, autoAlpha: 0 }, { scaleX: 1, autoAlpha: 1, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: d, start: 'top 90%', once: true } });
+  });
+  all('.rosette').forEach((r) => {
+    gsap.fromTo(r, { rotate: -90, scale: 0.6, autoAlpha: 0 }, { rotate: 0, scale: 1, autoAlpha: 1, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: r, start: 'top 92%', once: true } });
+  });
+
   addEventListener('load', () => ScrollTrigger.refresh());
 }

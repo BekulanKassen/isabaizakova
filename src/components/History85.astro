@@ -1,4 +1,6 @@
 ---
+import Frieze from './Frieze.astro';
+import Divider from './Divider.astro';
 import { Image } from 'astro:assets';
 import { t, type Lang } from '../i18n/ui';
 import { img } from '../lib/images';
@@ -14,6 +16,7 @@ const years = [
 ] as const;
 ---
 <section class="on-dark" id="tarih" aria-labelledby="tarih-h">
+  <Frieze class="band" tone="ochre" />
   <div class="y85">
     <div class="arc a1" data-speed="0.9"><Image src={img('a-1970s.webp')} alt={t(lang, 'arc1Alt')} width={560} /></div>
     <div class="arc a2" data-speed="0.5"><Image src={img('a-singer.webp')} alt={t(lang, 'arc2Alt')} width={440} /></div>
@@ -21,7 +24,9 @@ const years = [
     <div class="wrap y85-grid">
       <div class="big85 tnum" aria-hidden="true">85</div>
       <div class="y85-txt">
+        <span class="numeral">IV</span>
         <h2 id="tarih-h"><span class="sr">85 </span>{t(lang, 'y85Title')}</h2>
+        <Divider />
         <p>{t(lang, 'y85Text')}</p>
       </div>
     </div>

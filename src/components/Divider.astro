@@ -1,0 +1,8 @@
+---
+// Hairline with a pair of ram's horns: the cornice line under a section title.
+interface Props { align?: 'start' | 'center' }
+const { align = 'start' } = Astro.props;
+---
+<div class:list={['divider', `divider-${align}`]} aria-hidden="true">
+  <svg viewBox="-48 -22 96 32" width="96" height="32"><use href="#o-pair" transform="translate(-20,6) scale(1.15)" /><use href="#o-pair" transform="translate(20,6) scale(1.15)" /><circle cx="0" cy="-2" r="2.6" fill="currentColor" /></svg>
+</div>

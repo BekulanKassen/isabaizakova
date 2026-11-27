@@ -1,4 +1,5 @@
 ---
+import Divider from './Divider.astro';
 import { Image } from 'astro:assets';
 import Arrow from './Arrow.astro';
 import { t, TICKETON, type Lang } from '../i18n/ui';
@@ -9,7 +10,7 @@ const GIS = 'https://2gis.kz/pavlodar/search/%D0%A4%D0%B8%D0%BB%D0%B0%D1%80%D0%B
 ---
 <section class="sec visit" id="kelushilerge" aria-labelledby="visit-h">
   <div class="wrap">
-    <div class="sec-head"><h2 id="visit-h">{t(lang, 'visitTitle')}</h2></div>
+    <div class="sec-head"><div><span class="numeral">VI</span><h2 id="visit-h">{t(lang, 'visitTitle')}</h2><Divider /></div></div>
     <div class="visit-grid">
       <div class="card buy">
         <h3>{t(lang, 'howToBuy')}</h3>
