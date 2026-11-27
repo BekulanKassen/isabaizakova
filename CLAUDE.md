@@ -4,7 +4,7 @@
 
 ## Главное
 
-- Рабочий сайт на Astro (ветка `astro-site`): компоненты в `src/components/`, данные в `src/data/` (афиша `afisha.json`, коллективы, новости), строки интерфейса в `src/i18n/ui.ts`, стили в `src/styles/global.css`. Запуск: `npm install`, `npm run dev`. Тесты: `npx vitest run` и `npx playwright test`. План: `docs/superpowers/plans/2026-11-26-astro-site.md`.
+- Рабочий сайт на Astro: компоненты в `src/components/`, данные в `src/data/` (афиша `afisha.json`, коллективы, новости), строки интерфейса в `src/i18n/ui.ts`, стили в `src/styles/global.css`. Запуск: `npm install`, `npm run dev`. Тесты: `npx vitest run` и `npx playwright test`. План: `docs/superpowers/plans/2026-11-26-astro-site.md`.
 - `site/index.html` — исходный макет, эталон внешнего вида до запуска.
 - Казахский язык основной: `/kk/`, русский `/ru/`. Любой новый текст пишите на обоих языках (`kk` и `ru` в данных или в `ui.ts`).
 - Цвета только из CSS-переменных в `:root` (лепнина, сцена, кресла, охра, позолота, фойе). Фиолетовый не использовать.
